@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))]
 public class Hand : MonoBehaviour
 {
-    private GameObject hand;
-
+    public float springForce = 10.0f;
     public float horizontalSpeed = 10f;
     public float verticalSpeed = 5f;
 
@@ -13,16 +13,17 @@ public class Hand : MonoBehaviour
     private Vector3 targetPosition;
 
     private Vector2 prevMouseScreenPos;
+    private GameObject hand;
+    Rigidbody body;
     //test
     private void Start()
     {
         // Creates a sphere to represent the hand (delete this later when we have a hand model)
-        hand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        hand.GetComponent<Collider>().enabled = false;
+        hand = this.gameObject;
+        body = GetComponent<Rigidbody>();
 
         // Starts the hand at the max height
         targetPosition.y = maxHeight;
-        hand.transform.position = new Vector3(0, maxHeight, 0);
     }
 
     private void Update()
@@ -36,11 +37,17 @@ public class Hand : MonoBehaviour
         {
             HandleHorizontalMovement();
         }
-
+        //horizontalSpeed = Mathf.Min(15, Mathf.Max(10,distance ));
         // Moves the hand toward the target position
-        hand.transform.position = Vector3.MoveTowards(hand.transform.position, targetPosition, horizontalSpeed * Time.deltaTime);
+        //hand.transform.position = Vector3.MoveTowards(hand.transform.position, targetPosition,ltaTime);
     }
+    void FixedUpdate()
+    {
+        var dir = (targetPosition - hand.transform.position).normalized;
+        var distance = (hand.transform.position - targetPosition).sqrMagnitude;
+        body.AddForce(dir * distance * springForce * Time.fixedDeltaTime);
 
+    }
     private void HandleHorizontalMovement()
     {
         // Gets a ray from the camera's position to the mouse's world position
