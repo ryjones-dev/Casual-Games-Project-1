@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PickUp : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
+    public GameObject hand;
+    // Use this for initialization
+    void Start () {
 		
 	}
 	
