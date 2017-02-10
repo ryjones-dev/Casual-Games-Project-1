@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Hand : MonoBehaviour
 {
-    private GameObject hand;
+    public GameObject hand;
 
     public float horizontalSpeed = 10f;
     public float verticalSpeed = 5f;
@@ -16,9 +16,9 @@ public class Hand : MonoBehaviour
     //test
     private void Start()
     {
-        // Creates a sphere to represent the hand (delete this later when we have a hand model)
-        hand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        hand.GetComponent<Collider>().enabled = false;
+       // Creates a sphere to represent the hand (delete this later when we have a hand model)
+       // hand = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+      //  hand.GetComponent<Collider>().enabled = false;
 
         // Starts the hand at the max height
         targetPosition.y = maxHeight;
