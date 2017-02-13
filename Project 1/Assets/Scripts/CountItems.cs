@@ -17,7 +17,7 @@ public class CountItems : MonoBehaviour {
 	void Start () {
         items = new List<GameObject>();
         //items = GameObject.FindGameObjectsWithTag("Item");
-        itemsContained = new float[items.Length];
+        //itemsContained = new float[items.Length];
 	}
 	
 	// Update is called once per frame
@@ -27,7 +27,7 @@ public class CountItems : MonoBehaviour {
 
     void OnTriggerEnter(Collider o)
     {
-        if (o.gameObject.tag = "Item")
+        if (o.gameObject.tag == "Item")
         {
             items.Add(o.gameObject);
         }
@@ -35,7 +35,7 @@ public class CountItems : MonoBehaviour {
 
     void OnTriggerExit(Collider o)
     {
-        if (o.gameObject.tag = "Item")
+        if (o.gameObject.tag == "Item")
         {
             items.Remove(o.gameObject);
         }
