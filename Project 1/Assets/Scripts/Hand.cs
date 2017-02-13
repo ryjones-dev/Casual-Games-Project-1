@@ -7,6 +7,7 @@ public class Hand : MonoBehaviour
 {
     public float horizontalSpeed = 5;
     public float verticalSpeed = 10;
+    public float frictionForce = 5;
     public float maxHeight = 5;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
 
@@ -23,7 +24,13 @@ public class Hand : MonoBehaviour
 
     private void Update()
     {
-        // Move vertically when holding LMB, or horizontally otherwise
+        // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
+    }
+
+    private void FixedUpdate()
+    {
+        // Move vertically when holding LMB, handle rotation when holding RMB, or move horizontally otherwise
         if(Input.GetButton("Fire1"))
         {
             HandleVerticalMovement();
@@ -36,29 +43,31 @@ public class Hand : MonoBehaviour
         {
             HandleHorizontalMovement();
         }
+
+        // Adds a friction force to decelerate the hand
+        body.AddForce(-body.velocity.normalized * frictionForce);
     }
 
-    void FixedUpdate()
-    {
-        float hMouseDelta = Input.GetAxis("Mouse X");
-        float vMouseDelta = Input.GetAxis("Mouse Y");
+    //void FixedUpdate()
+    //{
+    //    float hMouseDelta = Input.GetAxis("Mouse X");
+    //    float vMouseDelta = Input.GetAxis("Mouse Y");
 
-        Vector3 dir = (targetPosition - transform.position).normalized;
-        //float distance = (transform.position - targetPosition).magnitude;
+    //    Vector3 dir = (targetPosition - transform.position).normalized;
+    //    //float distance = (transform.position - targetPosition).magnitude;
 
-        Vector3 speed = dir;
-        speed.x *= horizontalSpeed;
-        speed.y *= verticalSpeed;
-        speed.z *= horizontalSpeed;
+    //    Vector3 speed = dir;
+    //    speed.x *= horizontalSpeed;
+    //    speed.y *= verticalSpeed;
+    //    speed.z *= horizontalSpeed;
 
-        body.velocity = speed * Time.fixedDeltaTime;
+    //    body.velocity = speed * Time.fixedDeltaTime;
 
-    }
+    //}
 
     private void HandleHorizontalMovement()
     {
-        targetPosition.x += Input.GetAxis("Mouse X");
-        targetPosition.z += Input.GetAxis("Mouse Y");
+        body.velocity += new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")).normalized * horizontalSpeed * Time.fixedDeltaTime; 
     }
 
     private void HandleRotation()
@@ -81,22 +90,10 @@ public class Hand : MonoBehaviour
 
     private void HandleVerticalMovement()
     {
-        // Gets the vertical mouse delta
-        float vMouseDelta = Input.GetAxis("Mouse Y");
+        // Gets the vertical hand delta
+        float vDelta = Input.GetAxis("Mouse Y") * horizontalSpeed * Time.fixedDeltaTime;
 
-        // Mouse has moved down
-        if (vMouseDelta < 0)
-        {
-            // Move the hand down
-            targetPosition.y -= verticalSpeed * Time.deltaTime;
-        }
-        else if (vMouseDelta > 0) // Mouse has moved up
-        {
-            // Move the hand up
-            targetPosition.y += verticalSpeed * Time.deltaTime;
-        }
-
-        // Clamps the hand height between 0 and the max height
-        targetPosition.y = Mathf.Clamp(targetPosition.y, 0, maxHeight);
+        // Moves the hand vertically
+        body.velocity += new Vector3(0, vDelta, 0);
     }
 }
