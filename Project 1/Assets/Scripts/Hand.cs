@@ -13,6 +13,10 @@ public class Hand : MonoBehaviour
     private Vector3 targetPosition;
 
     private Vector2 prevMouseScreenPos;
+
+    private bool objectInHand = false;
+    private Collision heldObject;
+
     //test
     private void Start()
     {
@@ -77,4 +81,5 @@ public class Hand : MonoBehaviour
         // Saves the mouse position as the previous mouse position for next update
         prevMouseScreenPos = Input.mousePosition;
     }
+
 }
