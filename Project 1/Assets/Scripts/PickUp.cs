@@ -26,6 +26,10 @@ public class PickUp : MonoBehaviour {
             collision.gameObject.transform.parent = hand.transform;
             objectInHand = true;
             heldObject = collision;
+            collision.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            //collision.gameObject.GetComponent<Rigidbody>().useGravity = false;
+            //collision.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
+            //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
         }
     }
 
@@ -44,5 +48,4 @@ public class PickUp : MonoBehaviour {
         objectInHand = false;
         heldObject = null;
     }
-
 }
