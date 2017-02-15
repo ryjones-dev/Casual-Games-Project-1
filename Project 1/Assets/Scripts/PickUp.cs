@@ -23,7 +23,7 @@ public class PickUp : MonoBehaviour {
         }
         
         if (collision.gameObject.tag == "intractable"){
-            collision.transform.parent = hand.transform;
+            collision.gameObject.transform.parent = hand.transform;
             objectInHand = true;
             heldObject = collision;
         }
@@ -40,8 +40,9 @@ public class PickUp : MonoBehaviour {
     }
 
     private void dropObject(Collision toDrop){
-        toDrop.transform.parent = null;
+        toDrop.gameObject.transform.parent = null;
         objectInHand = false;
+        heldObject = null;
     }
 
 }
