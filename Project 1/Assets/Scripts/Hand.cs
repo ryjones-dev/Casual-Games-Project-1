@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Hand : MonoBehaviour
 {
-    public float horizontalSpeed = 5;
+    public float horizontalSpeed = 10;
     public float verticalSpeed = 10;
     public float frictionForce = 5;
     public float maxHeight = 5;
@@ -31,11 +31,11 @@ public class Hand : MonoBehaviour
     private void FixedUpdate()
     {
         // Move vertically when holding LMB, handle rotation when holding RMB, or move horizontally otherwise
-        if(Input.GetButton("Fire1"))
+        if (Input.GetButton("Fire1"))
         {
             HandleVerticalMovement();
         }
-        else if(Input.GetButton("Fire2"))
+        else if (Input.GetButton("Fire2"))
         {
             HandleRotation();
         }
@@ -48,26 +48,9 @@ public class Hand : MonoBehaviour
         body.AddForce(-body.velocity.normalized * frictionForce);
     }
 
-    //void FixedUpdate()
-    //{
-    //    float hMouseDelta = Input.GetAxis("Mouse X");
-    //    float vMouseDelta = Input.GetAxis("Mouse Y");
-
-    //    Vector3 dir = (targetPosition - transform.position).normalized;
-    //    //float distance = (transform.position - targetPosition).magnitude;
-
-    //    Vector3 speed = dir;
-    //    speed.x *= horizontalSpeed;
-    //    speed.y *= verticalSpeed;
-    //    speed.z *= horizontalSpeed;
-
-    //    body.velocity = speed * Time.fixedDeltaTime;
-
-    //}
-
     private void HandleHorizontalMovement()
     {
-        body.velocity += new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")).normalized * horizontalSpeed * Time.fixedDeltaTime; 
+        body.velocity += new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")).normalized * horizontalSpeed * Time.fixedDeltaTime;
     }
 
     private void HandleRotation()
