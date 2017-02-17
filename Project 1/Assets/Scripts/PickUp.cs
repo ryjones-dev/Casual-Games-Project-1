@@ -52,6 +52,7 @@ public class PickUp : MonoBehaviour {
 
     private void dropObject(Collision toDrop){
         toDrop.gameObject.transform.parent = null;
+        toDrop.gameObject.GetComponent<Rigidbody>().isKinematic = false;
         objectInHand = false;
         heldObject = null;
     }
