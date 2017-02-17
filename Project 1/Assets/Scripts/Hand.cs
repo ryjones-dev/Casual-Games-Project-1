@@ -7,7 +7,6 @@ public class Hand : MonoBehaviour
 {
     public float horizontalSpeed = 10;
     public float verticalSpeed = 10;
-    public float frictionForce = 5;
     public float maxHeight = 5;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
 
@@ -45,7 +44,7 @@ public class Hand : MonoBehaviour
         }
 
         // Adds a friction force to decelerate the hand
-        body.AddForce(-body.velocity.normalized * frictionForce);
+        //body.AddForce(-body.velocity.normalized * frictionForce);
     }
 
     private void HandleHorizontalMovement()
