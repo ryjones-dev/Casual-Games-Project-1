@@ -23,12 +23,6 @@ public class Hand : MonoBehaviour
 
     private void Update()
     {
-        // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
-    }
-
-    private void FixedUpdate()
-    {
         // Move vertically when holding LMB, handle rotation when holding RMB, or move horizontally otherwise
         if (Input.GetButton("Fire1"))
         {
@@ -43,8 +37,8 @@ public class Hand : MonoBehaviour
             HandleHorizontalMovement();
         }
 
-        // Adds a friction force to decelerate the hand
-        //body.AddForce(-body.velocity.normalized * frictionForce);
+        // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
     }
 
     private void HandleHorizontalMovement()
