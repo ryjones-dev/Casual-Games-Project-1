@@ -5,7 +5,7 @@ using UnityEngine;
 public class PickUp : MonoBehaviour {
     public GameObject hand;
     private bool objectInHand = false;
-    private Collision heldObject;
+    private GameObject heldObject;
     private const int PICK_UP_COOLDOWN = 20;
     private int currentCooldDown = 0;
     private bool onCooldown = false;
@@ -39,7 +39,7 @@ public class PickUp : MonoBehaviour {
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         if (!onCooldown)
         {
@@ -48,15 +48,13 @@ public class PickUp : MonoBehaviour {
                 return;
             }
 
-            if (collision.gameObject.tag == "intractable")
+            if (other.gameObject.tag == "intractable")
             {
-                collision.gameObject.transform.parent = hand.transform;
+                other.gameObject.transform.parent = hand.transform;
                 objectInHand = true;
-                heldObject = collision;
-                collision.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-                //collision.gameObject.GetComponent<Rigidbody>().useGravity = false;
-                //collision.gameObject.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-                //rigidbody.constraints = RigidbodyConstraints.FreezeAll;
+                heldObject = other.gameObject;
+
+                GameObject.Destroy(other.GetComponent<Rigidbody>());
             }
         }
     }
@@ -71,9 +69,10 @@ public class PickUp : MonoBehaviour {
         heldObject = null;
     }
 
-    private void dropObject(Collision toDrop){
-        toDrop.gameObject.transform.parent = null;
-        toDrop.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+    private void dropObject(GameObject toDrop){
+        toDrop.transform.parent = null;
+
+        toDrop.AddComponent<Rigidbody>();
         objectInHand = false;
         heldObject = null;
     }
