@@ -19,7 +19,7 @@ public class PickUp : MonoBehaviour {
     {
         if (!onCooldown)
         { 
-            if (Input.GetKeyDown("space"))
+            if (Input.GetButtonDown("Fire1"))
             {
                 if (heldObject != null)
                 {
@@ -48,7 +48,7 @@ public class PickUp : MonoBehaviour {
                 return;
             }
 
-            if (other.gameObject.tag == "intractable")
+            if (other.gameObject.tag == "Interactable")
             {
                 other.gameObject.transform.parent = hand.transform;
                 objectInHand = true;

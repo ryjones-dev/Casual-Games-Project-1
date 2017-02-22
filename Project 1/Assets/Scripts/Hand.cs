@@ -10,7 +10,7 @@ public class Hand : MonoBehaviour
     public float maxHeight = 5;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
 
-    Rigidbody body;
+    private Rigidbody body;
 
     private void Start()
     {
@@ -23,27 +23,22 @@ public class Hand : MonoBehaviour
 
     private void Update()
     {
-        // Move vertically when holding LMB, handle rotation when holding RMB, or move horizontally otherwise
-        if (Input.GetButton("Fire1"))
-        {
-            HandleVerticalMovement();
-        }
-        else if (Input.GetButton("Fire2"))
+        // Handle rotation when holding RMB, or handle moving otherwise
+        if (Input.GetButton("Fire2"))
         {
             HandleRotation();
         }
         else
         {
-            HandleHorizontalMovement();
+            HandleMovement();
         }
 
-        // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
     }
 
-    private void HandleHorizontalMovement()
+    private void HandleMovement()
     {
-        body.velocity += new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")).normalized * horizontalSpeed * Time.fixedDeltaTime;
+        body.velocity += new Vector3(Input.GetAxis("Mouse X") * horizontalSpeed * Time.deltaTime, Input.mouseScrollDelta.y * verticalSpeed * Time.deltaTime, Input.GetAxis("Mouse Y") * horizontalSpeed * Time.deltaTime);
     }
 
     private void HandleRotation()
@@ -62,14 +57,5 @@ public class Hand : MonoBehaviour
         //apply rotations in World space (for consistent rotations)
         //negative yRot feels more intuitive
         transform.Rotate(xRot, -yRot, 0, Space.World);
-    }
-
-    private void HandleVerticalMovement()
-    {
-        // Gets the vertical hand delta
-        float vDelta = Input.GetAxis("Mouse Y") * horizontalSpeed * Time.fixedDeltaTime;
-
-        // Moves the hand vertically
-        body.velocity += new Vector3(0, vDelta, 0);
     }
 }
