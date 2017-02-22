@@ -22,6 +22,8 @@ public class OptionsScript : MonoBehaviour {
 
     private CursorLockMode prevLockMode; // store previous lockmode, unlock cursor when menu is open and resume lock when closed
 
+    private Canvas canvas;
+
     // Use this for initialization
     void Start () {
 
@@ -40,35 +42,40 @@ public class OptionsScript : MonoBehaviour {
         music.value = musicVolume;
         sound.value = soundEffectVolume;
 
+        canvas = gameObject.GetComponent<Canvas>();
         //optionsMenu = GameObject.Find("OptionsMenu").GetComponent<Canvas>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown("escape"))
+        if (canvas.enabled) //do nothing if options menu is not "active"
         {
-            //escPanel.SetActive(!escPanel.activeSelf);
-            //if (optionsMenu.enabled)
-            if(settingsPanel.activeSelf)
+            if (Input.GetKeyDown("escape")) //esc opens and closes options menu
             {
-                CancelSettings();
-            }
-            else
-            {
-                Cursor.visible = true;
-                prevLockMode = Cursor.lockState;
-                Cursor.lockState = CursorLockMode.None;
+                if (settingsPanel.activeSelf) //close menu if it is open
+                {
+                    CancelSettings();
+                }
+                else //open menu if it is closed
+                {
+                    Cursor.visible = true;
+                    prevLockMode = Cursor.lockState;
+                    Cursor.lockState = CursorLockMode.None;
 
-                settingsPanel.SetActive(true);
-                escPanel.SetActive(false);
-                //optionsMenu.enabled = true;
+                    settingsPanel.SetActive(true);
+                    escPanel.SetActive(false);
+                }
             }
-
-           // optionsMenu.enabled = true;
-            //optionsMenu.enabled = !optionsMenu.enabled;
+        }
+        else if (settingsPanel.activeSelf) //if options menu was deactivated, cancel settings
+        {
+            CancelSettings();
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
     }
 
+    //apply new settings and close menu
     public void ChangeSettings()
     {
         Cursor.visible = false;
@@ -79,7 +86,6 @@ public class OptionsScript : MonoBehaviour {
         mouseRotationInverted = invertMouseRotation.isOn;
         musicVolume = music.value;
         soundEffectVolume = sound.value;
-        //optionsMenu.enabled = false;
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
@@ -88,6 +94,7 @@ public class OptionsScript : MonoBehaviour {
         EventSystem.current.SetSelectedGameObject(null);
     }
 
+    //close settings menu, revert settings to last accepted values
     public void CancelSettings()
     {
         Cursor.visible = false;
@@ -98,7 +105,6 @@ public class OptionsScript : MonoBehaviour {
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
         sound.value = soundEffectVolume;
-        //optionsMenu.enabled = false;
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
