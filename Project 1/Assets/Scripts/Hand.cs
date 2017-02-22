@@ -8,6 +8,7 @@ public class Hand : MonoBehaviour
     public float horizontalSpeed = 10;
     public float verticalSpeed = 10;
     public float maxHeight = 5;
+    public float minHeight = 0;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
 
     private Rigidbody body;
@@ -33,7 +34,7 @@ public class Hand : MonoBehaviour
             HandleMovement();
         }
 
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
     }
 
     private void HandleMovement()
