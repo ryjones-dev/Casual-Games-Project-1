@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class OptionsScript : MonoBehaviour {
-
-    //Canvas optionsMenu;
-
-    public GameObject settingsPanel;
-    public GameObject escPanel;
+    
+    public GameObject settingsPanel; //when menu is open
+    public GameObject escPanel;      //when menu is closed
     public Slider mouse;
     public float mouseSensitivity=1.0f;
     public Slider music;
@@ -21,7 +20,7 @@ public class OptionsScript : MonoBehaviour {
     public Toggle invertMouseRotation;
     public bool mouseRotationInverted = false;
 
-    private CursorLockMode prevLockMode;
+    private CursorLockMode prevLockMode; // store previous lockmode, unlock cursor when menu is open and resume lock when closed
 
     // Use this for initialization
     void Start () {
@@ -104,5 +103,15 @@ public class OptionsScript : MonoBehaviour {
         escPanel.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    public void LoadTitle()
+    {
+        SceneManager.LoadScene("Title");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
