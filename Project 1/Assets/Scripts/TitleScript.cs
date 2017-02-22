@@ -5,15 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class TitleScript : MonoBehaviour {
 
-    public GameObject persistant;
+    public GameObject persistent;
 
 	// Use this for initialization
 	void Start () {
 		
-        if(GameObject.Find("Persistant") == null)
+        if(GameObject.Find("Persistent") == null)
         {
-            GameObject per = GameObject.Instantiate(persistant);
-            per.name = "Persistant";
+            GameObject per = GameObject.Instantiate(persistent);
+            per.name = "Persistent";
         }
 	}
 	

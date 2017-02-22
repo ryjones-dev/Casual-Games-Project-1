@@ -7,8 +7,10 @@ using UnityEngine.SceneManagement;
 
 public class OptionsScript : MonoBehaviour {
     
-    public GameObject settingsPanel; //when menu is open
-    public GameObject escPanel;      //when menu is closed
+    public GameObject settingsPanel; //panel to show when menu is open
+    public GameObject escPanel;      //panel to show when menu is closed
+
+    //sliders and toggleboxes, and variables to store their last-held data
     public Slider mouse;
     public float mouseSensitivity=1.0f;
     public Slider music;
@@ -26,13 +28,12 @@ public class OptionsScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-
-        //optionsMenu = GetComponent<Canvas>();
-        //optionsMenu.enabled = false;
+        
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
-        //audio is not yet implemented
+        //audio is not yet implemented //disable audio settings
+        //leaving audio settings enabled for now, to show off options menu
         //music.enabled = false;
         //sound.enabled = false;
 
@@ -43,7 +44,6 @@ public class OptionsScript : MonoBehaviour {
         sound.value = soundEffectVolume;
 
         canvas = gameObject.GetComponent<Canvas>();
-        //optionsMenu = GameObject.Find("OptionsMenu").GetComponent<Canvas>();
 	}
 	
 	// Update is called once per frame
