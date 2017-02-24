@@ -9,10 +9,12 @@ public class Hand : MonoBehaviour
     public float verticalSpeed = 10;
     public float maxHeight = 5;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
-    public Vector3 defaultRotation = new Vector3(0.0f, 0.0f, 0.0f);
+    
     Rigidbody body;
-    public float xRotationDelta = 0.0f;
-    public float yRotationDelta = 0.0f;
+
+    public float xRotationDelta = 0.0f; //total amount rotated along xAxis sense script started
+    public float yRotationDelta = 0.0f; //total amount rotated along yAxis sense script started     NOTE: These two varaibles must be updated when roations are applied to the x or y axis of an object using this script
+    const float ROTATION_LIMIT = 45.0f;
 
     private void Start()
     {
@@ -54,12 +56,12 @@ public class Hand : MonoBehaviour
         yRotationDelta = 0.0f;
     }
 
-    private void limitRotation(float xRot, float yRot)
+ /*   private void limitRotation(float xRot, float yRot)
     {
-        this.transform.Rotate(-xRot, yRot, 0, Space.World);
+        this.transform.Rotate(-xRot, yRot, 0, Space.World);  //inverse rotation -x +y
         xRotationDelta -= xRot;
         yRotationDelta -= yRot;
-    }
+    } May have possible use for this as a helper function in the future. Feel free to delete if this seems useless */
 
     private void HandleHorizontalMovement()
     {
@@ -85,9 +87,11 @@ public class Hand : MonoBehaviour
         //negative yRot feels more intuitive
         transform.Rotate(xRot, -yRot, 0, Space.World);
 
-        if(xRotationDelta > 45 || yRotationDelta > 45 || xRotationDelta < -45 || yRotationDelta < -45)
+        if(xRotationDelta > ROTATION_LIMIT || yRotationDelta > ROTATION_LIMIT || xRotationDelta < -ROTATION_LIMIT || yRotationDelta < -ROTATION_LIMIT)
         {
-            limitRotation(xRot, yRot);
+            this.transform.Rotate(-xRot, yRot, 0, Space.World);  //inverse rotation -x +y
+            xRotationDelta -= xRot;
+            yRotationDelta -= yRot;
         }
     }
 
