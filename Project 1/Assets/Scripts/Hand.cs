@@ -5,83 +5,102 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Hand : MonoBehaviour
 {
-    public float springForce = 10.0f;
-    public float horizontalSpeed = 10f;
-    public float verticalSpeed = 5f;
-
+    public float horizontalSpeed = 10;
+    public float verticalSpeed = 10;
     public float maxHeight = 5;
-    private Vector3 targetPosition;
-
-    private Vector2 prevMouseScreenPos;
-    private GameObject hand;
+    public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
+    
     Rigidbody body;
-    //test
+
+    public float xRotationDelta = 0.0f; //total amount rotated along xAxis sense script started
+    public float yRotationDelta = 0.0f; //total amount rotated along yAxis sense script started     NOTE: These two varaibles must be updated when roations are applied to the x or y axis of an object using this script
+    const float ROTATION_LIMIT = 45.0f;
+
     private void Start()
     {
-        // Creates a sphere to represent the hand (delete this later when we have a hand model)
-        hand = this.gameObject;
-        body = GetComponent<Rigidbody>();
+        // Hides the cursor
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
-        // Starts the hand at the max height
-        targetPosition.y = maxHeight;
+        body = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        // Move vertically when holding LMB, or horizontally otherwise
-        if(Input.GetButton("Fire1"))
+        // Move vertically when holding LMB, handle rotation when holding RMB, or move horizontally otherwise
+        if (Input.GetButton("Fire1"))
         {
             HandleVerticalMovement();
+        }
+        else if (Input.GetButton("Fire2"))
+        {
+            HandleRotation();
+        }
+        else if (Input.GetMouseButtonDown(2))
+        {
+            ResetRotation();
         }
         else
         {
             HandleHorizontalMovement();
         }
-        //horizontalSpeed = Mathf.Min(15, Mathf.Max(10,distance ));
-        // Moves the hand toward the target position
-        //hand.transform.position = Vector3.MoveTowards(hand.transform.position, targetPosition,ltaTime);
-    }
-    void FixedUpdate()
-    {
-        var dir = (targetPosition - hand.transform.position).normalized;
-        var distance = (hand.transform.position - targetPosition).sqrMagnitude;
-        body.AddForce(dir * distance * springForce * Time.fixedDeltaTime);
 
+        // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
     }
+
+    private void ResetRotation()
+    {
+        transform.rotation = Quaternion.Euler(0, 90, 0);
+        xRotationDelta = 0.0f;
+        yRotationDelta = 0.0f;
+    }
+
+ /*   private void limitRotation(float xRot, float yRot)
+    {
+        this.transform.Rotate(-xRot, yRot, 0, Space.World);  //inverse rotation -x +y
+        xRotationDelta -= xRot;
+        yRotationDelta -= yRot;
+    } May have possible use for this as a helper function in the future. Feel free to delete if this seems useless */
+
     private void HandleHorizontalMovement()
     {
-        // Gets a ray from the camera's position to the mouse's world position
-        Ray mouseRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        body.velocity += new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")).normalized * horizontalSpeed * Time.fixedDeltaTime;
+    }
 
-        RaycastHit hit;
-        if (Physics.Raycast(mouseRay, out hit))
+    private void HandleRotation()
+    {
+        //scale rotations based on screen width and screen height
+        float wScale = 1.0f / Screen.width * 360 * rotationSensitivity;
+        float hScale = 1.0f / Screen.height * 360 * rotationSensitivity;
+
+        //get mouse movements from last frame
+        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+
+        //calculate rotaion angles around X and Y axises
+        float xRot = mouseDelta.y * wScale;
+        float yRot = mouseDelta.x * hScale;
+        xRotationDelta += xRot;
+        yRotationDelta += yRot;
+
+        //apply rotations in World space (for consistent rotations)
+        //negative yRot feels more intuitive
+        transform.Rotate(xRot, -yRot, 0, Space.World);
+
+        if(xRotationDelta > ROTATION_LIMIT || yRotationDelta > ROTATION_LIMIT || xRotationDelta < -ROTATION_LIMIT || yRotationDelta < -ROTATION_LIMIT)
         {
-            // Gets what the ray hits, and sets the hand's horizontal position to that hit point
-            targetPosition = new Vector3(hit.point.x, targetPosition.y, hit.point.z);
+            this.transform.Rotate(-xRot, yRot, 0, Space.World);  //inverse rotation -x +y
+            xRotationDelta -= xRot;
+            yRotationDelta -= yRot;
         }
     }
 
     private void HandleVerticalMovement()
     {
-        // Gets the mouse delta
-        Vector2 mouseDelta = (Vector2)Input.mousePosition - prevMouseScreenPos;
+        // Gets the vertical hand delta
+        float vDelta = Input.GetAxis("Mouse Y") * horizontalSpeed * Time.fixedDeltaTime;
 
-        // Mouse has moved up
-        if (mouseDelta.y < 0)
-        {
-            // Move the hand up
-            targetPosition.y -= verticalSpeed * Time.deltaTime;
-        }
-        else if (mouseDelta.y > 0) // Mouse has moved down
-        {
-            // Move the hand down
-            targetPosition.y += verticalSpeed * Time.deltaTime;
-        }
-
-        // Clamps the hand height between 0 and the max height
-        targetPosition.y = Mathf.Clamp(targetPosition.y, 0, maxHeight);
-
-        // Saves the mouse position as the previous mouse position for next update
-        prevMouseScreenPos = Input.mousePosition;
+        // Moves the hand vertically
+        body.velocity += new Vector3(0, vDelta, 0);
     }
 }
