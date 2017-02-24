@@ -8,9 +8,10 @@ public class Hand : MonoBehaviour
     public float horizontalSpeed = 10;
     public float verticalSpeed = 10;
     public float maxHeight = 5;
+    public float minHeight = 0;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
-    
-    Rigidbody body;
+
+    private Rigidbody body;
 
     public float xRotationDelta = 0.0f; //total amount rotated along xAxis sense script started
     public float yRotationDelta = 0.0f; //total amount rotated along yAxis sense script started     NOTE: These two varaibles must be updated when roations are applied to the x or y axis of an object using this script
@@ -27,12 +28,8 @@ public class Hand : MonoBehaviour
 
     private void Update()
     {
-        // Move vertically when holding LMB, handle rotation when holding RMB, or move horizontally otherwise
-        if (Input.GetButton("Fire1"))
-        {
-            HandleVerticalMovement();
-        }
-        else if (Input.GetButton("Fire2"))
+        // Handle rotation when holding RMB, or handle moving otherwise
+        if (Input.GetButton("Fire2"))
         {
             HandleRotation();
         }
@@ -42,11 +39,10 @@ public class Hand : MonoBehaviour
         }
         else
         {
-            HandleHorizontalMovement();
+            HandleMovement();
         }
 
-        // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
     }
 
     private void ResetRotation()
@@ -63,9 +59,9 @@ public class Hand : MonoBehaviour
         yRotationDelta -= yRot;
     } May have possible use for this as a helper function in the future. Feel free to delete if this seems useless */
 
-    private void HandleHorizontalMovement()
+    private void HandleMovement()
     {
-        body.velocity += new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")).normalized * horizontalSpeed * Time.fixedDeltaTime;
+        body.velocity += new Vector3(Input.GetAxis("Mouse X") * horizontalSpeed * Time.deltaTime, Input.mouseScrollDelta.y * verticalSpeed * Time.deltaTime, Input.GetAxis("Mouse Y") * horizontalSpeed * Time.deltaTime);
     }
 
     private void HandleRotation()
@@ -93,14 +89,5 @@ public class Hand : MonoBehaviour
             xRotationDelta -= xRot;
             yRotationDelta -= yRot;
         }
-    }
-
-    private void HandleVerticalMovement()
-    {
-        // Gets the vertical hand delta
-        float vDelta = Input.GetAxis("Mouse Y") * horizontalSpeed * Time.fixedDeltaTime;
-
-        // Moves the hand vertically
-        body.velocity += new Vector3(0, vDelta, 0);
     }
 }
