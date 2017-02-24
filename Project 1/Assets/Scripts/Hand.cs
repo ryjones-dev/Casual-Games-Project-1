@@ -9,8 +9,10 @@ public class Hand : MonoBehaviour
     public float verticalSpeed = 10;
     public float maxHeight = 5;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
-
+    public Vector3 defaultRotation = new Vector3(0.0f, 0.0f, 0.0f);
     Rigidbody body;
+    public float xRotationDelta = 0.0f;
+    public float yRotationDelta = 0.0f;
 
     private void Start()
     {
@@ -32,6 +34,10 @@ public class Hand : MonoBehaviour
         {
             HandleRotation();
         }
+        else if (Input.GetMouseButtonDown(2))
+        {
+            ResetRotation();
+        }
         else
         {
             HandleHorizontalMovement();
@@ -39,6 +45,20 @@ public class Hand : MonoBehaviour
 
         // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
+    }
+
+    private void ResetRotation()
+    {
+        transform.rotation = Quaternion.Euler(0, 90, 0);
+        xRotationDelta = 0.0f;
+        yRotationDelta = 0.0f;
+    }
+
+    private void limitRotation(float xRot, float yRot)
+    {
+        this.transform.Rotate(-xRot, yRot, 0, Space.World);
+        xRotationDelta -= xRot;
+        yRotationDelta -= yRot;
     }
 
     private void HandleHorizontalMovement()
@@ -58,10 +78,17 @@ public class Hand : MonoBehaviour
         //calculate rotaion angles around X and Y axises
         float xRot = mouseDelta.y * wScale;
         float yRot = mouseDelta.x * hScale;
+        xRotationDelta += xRot;
+        yRotationDelta += yRot;
 
         //apply rotations in World space (for consistent rotations)
         //negative yRot feels more intuitive
         transform.Rotate(xRot, -yRot, 0, Space.World);
+
+        if(xRotationDelta > 45 || yRotationDelta > 45 || xRotationDelta < -45 || yRotationDelta < -45)
+        {
+            limitRotation(xRot, yRot);
+        }
     }
 
     private void HandleVerticalMovement()
