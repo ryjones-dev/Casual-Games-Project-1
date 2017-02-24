@@ -9,8 +9,12 @@ public class Hand : MonoBehaviour
     public float verticalSpeed = 10;
     public float maxHeight = 5;
     public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
-
+    
     Rigidbody body;
+
+    public float xRotationDelta = 0.0f; //total amount rotated along xAxis sense script started
+    public float yRotationDelta = 0.0f; //total amount rotated along yAxis sense script started     NOTE: These two varaibles must be updated when roations are applied to the x or y axis of an object using this script
+    const float ROTATION_LIMIT = 45.0f;
 
     private void Start()
     {
@@ -32,6 +36,10 @@ public class Hand : MonoBehaviour
         {
             HandleRotation();
         }
+        else if (Input.GetMouseButtonDown(2))
+        {
+            ResetRotation();
+        }
         else
         {
             HandleHorizontalMovement();
@@ -40,6 +48,20 @@ public class Hand : MonoBehaviour
         // Clamps the hand's position between the min and max height (This is done in update intentionally so the clamp actually works)
         transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, 0, maxHeight), transform.position.z);
     }
+
+    private void ResetRotation()
+    {
+        transform.rotation = Quaternion.Euler(0, 90, 0);
+        xRotationDelta = 0.0f;
+        yRotationDelta = 0.0f;
+    }
+
+ /*   private void limitRotation(float xRot, float yRot)
+    {
+        this.transform.Rotate(-xRot, yRot, 0, Space.World);  //inverse rotation -x +y
+        xRotationDelta -= xRot;
+        yRotationDelta -= yRot;
+    } May have possible use for this as a helper function in the future. Feel free to delete if this seems useless */
 
     private void HandleHorizontalMovement()
     {
@@ -58,10 +80,19 @@ public class Hand : MonoBehaviour
         //calculate rotaion angles around X and Y axises
         float xRot = mouseDelta.y * wScale;
         float yRot = mouseDelta.x * hScale;
+        xRotationDelta += xRot;
+        yRotationDelta += yRot;
 
         //apply rotations in World space (for consistent rotations)
         //negative yRot feels more intuitive
         transform.Rotate(xRot, -yRot, 0, Space.World);
+
+        if(xRotationDelta > ROTATION_LIMIT || yRotationDelta > ROTATION_LIMIT || xRotationDelta < -ROTATION_LIMIT || yRotationDelta < -ROTATION_LIMIT)
+        {
+            this.transform.Rotate(-xRot, yRot, 0, Space.World);  //inverse rotation -x +y
+            xRotationDelta -= xRot;
+            yRotationDelta -= yRot;
+        }
     }
 
     private void HandleVerticalMovement()
