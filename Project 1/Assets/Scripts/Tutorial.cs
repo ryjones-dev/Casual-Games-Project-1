@@ -11,16 +11,15 @@ public class Tutorial : MonoBehaviour
         PLAYING // This is the state while there is no textbox on the screen
     }
 
-    private GameObject textbox;
     private TutorialState tutorialState;
     private int tutorialProgress;
 
     private void Start()
     {
-        textbox = transform.FindChild("Textbox").gameObject;
-
         tutorialState = TutorialState.TEXTBOX;
         tutorialProgress = 0;
+
+        StartCoroutine(BeginTutorial());
     }
 
     private void Update()
@@ -41,6 +40,14 @@ public class Tutorial : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private IEnumerator BeginTutorial()
+    {
+        MessageBox.ShowMessageBox("You're going to miss your plane! Pack up as much as you can within the time limit! You're going to miss your plane! Pack up as much as you can within the time limit! You're going to miss your plane! Pack up as much as you can within the time limit!");
+        yield return MessageBox.WaitForSubmit();
+
+        MessageBox.HideMessageBox();
     }
 
     private void Advance()
