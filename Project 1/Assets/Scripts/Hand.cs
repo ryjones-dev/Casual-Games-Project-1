@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Hand : MonoBehaviour
 {
+    private GameObject persistent;
+    private OptionsScript optionsScript;
+
     public float horizontalSpeed = 10;
     public float verticalSpeed = 10;
     public float maxHeight = 5;
@@ -24,10 +27,30 @@ public class Hand : MonoBehaviour
         Cursor.visible = false;
 
         body = GetComponent<Rigidbody>();
+
+        //store persistent and options script
+        persistent = GameObject.Find("Persistent");
+        GameObject optionsMenu = persistent.transform.Find("OptionsMenu").gameObject;
+        optionsScript = optionsMenu.GetComponent<OptionsScript>();
     }
 
     private void Update()
     {
+        //handle options menu settings
+        horizontalSpeed = optionsScript.mouseSensitivity * 10;
+        verticalSpeed = optionsScript.mouseSensitivity * 10;
+        if (optionsScript.invertMouseMovement)
+        {
+            horizontalSpeed *= -1;
+            verticalSpeed *= -1;
+        }
+
+        rotationSensitivity = optionsScript.mouseSensitivity * 5.0f;
+        if (optionsScript.invertMouseRotation)
+        {
+            rotationSensitivity *= -1;
+        }
+
         // Handle rotation when holding RMB, or handle moving otherwise
         if (Input.GetButton("Fire2"))
         {
