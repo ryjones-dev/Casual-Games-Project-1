@@ -6,7 +6,7 @@ public class MessageBox : MonoBehaviour
 {
     private static MessageBox Instance = null; // The singleton instance. Singletons establish a single instance and prevent that instance reference from being changed.
 
-    private Canvas messageBox; // The canvas component that should be toggled to show/hide the message box.
+    private GameObject messageBox; // The canvas component that should be toggled to show/hide the message box.
     private Text message; // The text component in the message box.
     private Image messageBoxEndIcon; // The image that the textbox should enable when the message has finished.
 
@@ -63,7 +63,7 @@ public class MessageBox : MonoBehaviour
 	/// </summary>
     public static bool IsActive
     {
-        get { return Instance.messageBox.enabled; }
+        get { return Instance.messageBox.activeSelf; }
     }
 
     // Start is called when the MessageBox game object is loaded.
@@ -77,7 +77,7 @@ public class MessageBox : MonoBehaviour
 			Instance = this;
 		}
 		
-		messageBox = GetComponent<Canvas>(); // Assigns the Canvas component of this game object to the messageBox variable.
+		messageBox = transform.FindChild("Textbox").gameObject; // Assigns the Canvas component of this game object to the messageBox variable.
         message = GetComponentInChildren<Text>(); // Assigns the first instance of the Text component from the children of this game object to the message variable.
         messageBoxEndIcon = GameObject.FindGameObjectWithTag("Textbox End Icon").GetComponent<Image>(); // Saves the Image component of the game object with the tag "Textbox End Icon".
 
@@ -90,7 +90,7 @@ public class MessageBox : MonoBehaviour
 		currentTextSpeed = textSpeed; // Assigns the current text speed to the normal text speed by default.
 
         // Hides the message box by default
-        Instance.messageBox.enabled = false;
+        Instance.messageBox.SetActive(false);
     }
     
     // Update is called once every frame.
@@ -116,9 +116,10 @@ public class MessageBox : MonoBehaviour
     {
         //Game.Pause(); // Pauses the game. Optional if using the Game class.
 
-        Instance.messageBox.enabled = true; // Shows the message box by enabling the canvas.
-		
-		// Sets all of the parameters to their appropriate instance variables.
+        Instance.messageBox.SetActive(true); // Shows the message box.
+        Instance.messageBoxEndIcon.enabled = false; // Disables the message box end icon.
+
+        // Sets all of the parameters to their appropriate instance variables.
         Instance.message.fontSize = fontSize;
         Instance.message.color = fontColor;
         if (font != null) // Only assign the font if a font is passed in.
@@ -146,7 +147,7 @@ public class MessageBox : MonoBehaviour
     {
         Instance.characterCount = 0;
         Instance.messageBoxEndIcon.enabled = false; // Hides the message box end icon.
-        Instance.messageBox.enabled = false; // Hides the message box by disabling the canvas.
+        Instance.messageBox.SetActive(false); // Hides the message box.
 
         //Game.UnPause(); // Unpauses the game. Optional if using the Game class.
     }
@@ -212,16 +213,18 @@ public class MessageBox : MonoBehaviour
             // Adds to the character count (including spaces).
             characterCount += word.Length + 1;
 
-            // "Refreshes" the text box to include the new characters in characterCount and characterCountVisible
-            //Vector2 extents = message.rectTransform.rect.size;
-            //TextGenerationSettings settings = message.GetGenerationSettings(extents);
-            //message.cachedTextGenerator.Populate(message.text, settings);
+            // "Refreshes" the text box to include the new characters in characterCountVisible
+            Vector2 extents = message.rectTransform.rect.size;
+            TextGenerationSettings settings = message.GetGenerationSettings(extents);
+            message.cachedTextGenerator.Populate(message.text, settings);
 
             // Checks if there are characters visible in the message box and that there are more characters than currently visible.
             // Effectively checks if the message box needs to be refreshed to show the rest of the message.
             if (characterCount > message.cachedTextGenerator.characterCountVisible && message.cachedTextGenerator.characterCountVisible > 0)
 			{
                 message.text = message.text.Remove(lastCharIndex); // Removes the newly added word.
+
+                Instance.messageBoxEndIcon.enabled = true; // Enables the message end icon.
 
                 // Starts the WaitForSubmitWhenFilled coroutine, forcing the player to press the submit button before advancing with the rest of the message.
                 yield return StartCoroutine(WaitForSubmitWhenFilled());
