@@ -10,6 +10,7 @@ namespace NGame
         [SerializeField]
         ITEM_TYPE m_type;
         public ITEM_STATUS m_status;
+        public bool m_isTouchingEdge = false;
         [SerializeField]
         List<ITEM_PURPOSE> m_purposes;
         
