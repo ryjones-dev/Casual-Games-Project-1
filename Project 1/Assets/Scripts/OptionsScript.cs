@@ -10,6 +10,8 @@ public class OptionsScript : MonoBehaviour {
     public GameObject settingsPanel; //panel to show when menu is open
     public GameObject escPanel;      //panel to show when menu is closed
 
+    public bool gamePaused = false;
+
     //sliders and toggleboxes, and variables to store their last-held data
     public Slider mouse;
     public float mouseSensitivity=1.0f;
@@ -52,7 +54,8 @@ public class OptionsScript : MonoBehaviour {
         {
             if (Input.GetKeyDown("escape")) //esc opens and closes options menu
             {
-                if (settingsPanel.activeSelf) //close menu if it is open
+                if(gamePaused) //close menu if it is open
+                //if (settingsPanel.activeSelf) 
                 {
                     CancelSettings();
                 }
@@ -64,14 +67,17 @@ public class OptionsScript : MonoBehaviour {
 
                     settingsPanel.SetActive(true);
                     escPanel.SetActive(false);
+                    gamePaused = true;
                 }
             }
         }
-        else if (settingsPanel.activeSelf) //if options menu was deactivated, cancel settings
+        else if(gamePaused)
+        //else if (settingsPanel.activeSelf) //if options menu was deactivated, cancel settings
         {
             CancelSettings();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+            gamePaused = false;
         }
     }
 
@@ -92,6 +98,7 @@ public class OptionsScript : MonoBehaviour {
         //deselect button, otherwise last-hit button will appear to be highlighted until a new button is hit, 
         //seems like weird default behavior personally
         EventSystem.current.SetSelectedGameObject(null);
+        gamePaused = false;
     }
 
     //close settings menu, revert settings to last accepted values
@@ -109,6 +116,7 @@ public class OptionsScript : MonoBehaviour {
         escPanel.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
+        gamePaused = false;
     }
 
     public void LoadTitle()
