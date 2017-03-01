@@ -10,6 +10,8 @@ public class PickUp : MonoBehaviour {
     private int currentCooldDown = 0;
     private bool onCooldown = false;
 
+    Transform m_heldObjectParent;
+
     // Use this for initialization
     void Start () {
     }
@@ -50,14 +52,11 @@ public class PickUp : MonoBehaviour {
 
             if (other.gameObject.tag == "Interactable")
             {
-                other.gameObject.transform.parent = hand.transform;
-                objectInHand = true;
-                heldObject = other.gameObject;
-
-                GameObject.Destroy(other.GetComponent<Rigidbody>());
+                pickUp(other.gameObject);
             }
         }
     }
+    
 
     //revist this and actually listen for input once we decide upon a key to bind the action of droping an object too
     private void OnPlayerInput(){
@@ -69,9 +68,18 @@ public class PickUp : MonoBehaviour {
         heldObject = null;
     }
 
-    private void dropObject(GameObject toDrop){
-        toDrop.transform.parent = null;
+    void pickUp(GameObject obj)
+    {
+        m_heldObjectParent = obj.transform.parent;
+        obj.transform.parent = hand.transform;
+        objectInHand = true;
+        heldObject = obj.gameObject;
 
+        GameObject.Destroy(obj.GetComponent<Rigidbody>());
+    }
+    void dropObject(GameObject toDrop){
+        toDrop.transform.parent = null;
+        toDrop.transform.parent = m_heldObjectParent;
         toDrop.AddComponent<Rigidbody>();
         objectInHand = false;
         heldObject = null;
