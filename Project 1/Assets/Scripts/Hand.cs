@@ -36,36 +36,39 @@ public class Hand : MonoBehaviour
 
     private void Update()
     {
-        //handle options menu settings
-        horizontalSpeed = optionsScript.mouseSensitivity * 10;
-        verticalSpeed = optionsScript.mouseSensitivity * 10;
-        if (optionsScript.invertMouseMovement)
+        if (optionsScript.gamePaused) //do not register player input when game is paused
         {
-            horizontalSpeed *= -1;
-            verticalSpeed *= -1;
-        }
+            //handle options menu settings
+            horizontalSpeed = optionsScript.mouseSensitivity * 10;
+            verticalSpeed = optionsScript.mouseSensitivity * 10;
+            if (optionsScript.invertMouseMovement)
+            {
+                horizontalSpeed *= -1;
+                verticalSpeed *= -1;
+            }
 
-        rotationSensitivity = optionsScript.mouseSensitivity * 5.0f;
-        if (optionsScript.invertMouseRotation)
-        {
-            rotationSensitivity *= -1;
-        }
+            rotationSensitivity = optionsScript.mouseSensitivity * 5.0f;
+            if (optionsScript.invertMouseRotation)
+            {
+                rotationSensitivity *= -1;
+            }
 
-        // Handle rotation when holding RMB, or handle moving otherwise
-        if (Input.GetButton("Fire2"))
-        {
-            HandleRotation();
-        }
-        else if (Input.GetMouseButtonDown(2))
-        {
-            ResetRotation();
-        }
-        else
-        {
-            HandleMovement();
-        }
+            // Handle rotation when holding RMB, or handle moving otherwise
+            if (Input.GetButton("Fire2"))
+            {
+                HandleRotation();
+            }
+            else if (Input.GetMouseButtonDown(2))
+            {
+                ResetRotation();
+            }
+            else
+            {
+                HandleMovement();
+            }
 
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
+            transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
+        }
     }
 
     private void ResetRotation()
