@@ -36,22 +36,24 @@ public class Hand : MonoBehaviour
 
     private void Update()
     {
-        if (optionsScript.gamePaused) //do not register player input when game is paused
+        if (!optionsScript.gamePaused) //do not register player input when game is paused
         {
             //handle options menu settings
             horizontalSpeed = optionsScript.mouseSensitivity * 10;
             verticalSpeed = optionsScript.mouseSensitivity * 10;
-            if (optionsScript.invertMouseMovement)
+            if (optionsScript.mouseMovementInverted)
             {
                 horizontalSpeed *= -1;
                 verticalSpeed *= -1;
             }
 
             rotationSensitivity = optionsScript.mouseSensitivity * 5.0f;
-            if (optionsScript.invertMouseRotation)
+            if (optionsScript.mouseRotationInverted)
             {
                 rotationSensitivity *= -1;
             }
+
+            Debug.Log(horizontalSpeed + " " + verticalSpeed);
 
             // Handle rotation when holding RMB, or handle moving otherwise
             if (Input.GetButton("Fire2"))
@@ -97,7 +99,7 @@ public class Hand : MonoBehaviour
         float hScale = 1.0f / Screen.height * 360 * rotationSensitivity;
 
         //get mouse movements from last frame
-        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 mouseDelta = new Vector2(optionsScript.mouseSensitivity * Input.GetAxis("Mouse X"), optionsScript.mouseSensitivity * Input.GetAxis("Mouse Y"));
 
         //calculate rotaion angles around X and Y axises
         float xRot = mouseDelta.y * wScale;
