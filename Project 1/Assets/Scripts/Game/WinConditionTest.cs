@@ -32,20 +32,48 @@ public class WinConditionTest : MonoBehaviour {
                     break;
                 }
             }
+            var itemInfo = getItemInfo(obj);
+            if(itemInfo!= null)
+            {
+                itemInfo.m_status = (isPresent)? NGame.ITEM_STATUS.REGISTERED: NGame.ITEM_STATUS.UNREGISTERED;
+                
+            }
             if (!isPresent)
             {
                 m_isAllitemsInside = false;
                 //m_winningScreen.SetActive(false);
-                return;
-
+                //return;
             }
         }
         m_isAllitemsInside = true;
         //m_winningScreen.SetActive(true);
     }
+    NGame.ItemInfo getItemInfo(GameObject obj)
+    {
+        var itemInfo = obj.GetComponent<NGame.ItemInfo>();
+        if (itemInfo != null) return itemInfo;
+        if (itemInfo.transform.parent == null) return null;
+        return getItemInfo(obj.transform.parent.gameObject);
+    }
     void hdrCheckNotWinningCondition(List<Collider> collider)
     {
         m_isAnyItemColliding = collider.Count != 0;
+
+
+        for (int i = 0; i < m_objs.Count; i++)
+        {
+            var obj = m_objs[i];
+            for (int j = 0; j < collider.Count; j++)
+            {
+                if (collider[j].gameObject == obj)
+                {
+                    var itemInfo = getItemInfo(obj);
+                    if (itemInfo != null)itemInfo.m_status = NGame.ITEM_STATUS.REGISTERE_ERROR;
+                    break;
+                    
+                }
+            }
+        }
     }
     // Update is called once per frame
     void Update () {
