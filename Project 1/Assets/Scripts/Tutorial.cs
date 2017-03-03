@@ -5,49 +5,63 @@ using UnityEngine.UI;
 
 public class Tutorial : MonoBehaviour
 {
+    public PickUp pickupScript;
+    public ColliderDetector InSuitcaseColliderDetector;
+
     public Image backgroundPanel;
     public float fadeInSpeed;
     public float fadeOutSpeed;
     public float alphaMax;
 
-    private enum TutorialState
-    {
-        TEXTBOX, // This is the state until the user left clicks to close the text box
-        PLAYING // This is the state while there is no textbox on the screen
-    }
-
-    private TutorialState tutorialState;
-    private int tutorialProgress;
-
     private void Start()
     {
-        StartCoroutine(FadeInBackground());
-
-        tutorialState = TutorialState.TEXTBOX;
-        tutorialProgress = 0;
-
         StartCoroutine(BeginTutorial());
-    }
-
-    private void Update()
-    {
     }
 
     private IEnumerator BeginTutorial()
     {
+        StartCoroutine(FadeInBackground());
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
         MessageBox.ShowMessageBox("You're going to miss your plane! Pack up as much as you can within the time limit!");
         yield return MessageBox.WaitForSubmit();
 
         MessageBox.HideMessageBox();
-        Advance();
-
-        tutorialState = TutorialState.PLAYING;
         StartCoroutine(FadeOutBackground());
-    }
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
-    private void Advance()
-    {
-        tutorialProgress++;
+        while(!pickupScript.HoldingObject)
+        {
+            yield return 0;
+        }
+
+        StartCoroutine(FadeInBackground());
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        MessageBox.ShowMessageBox("You've picked up an item! Drop the item in the suitcase to pack it.");
+        yield return MessageBox.WaitForSubmit();
+
+        MessageBox.HideMessageBox();
+        StartCoroutine(FadeOutBackground());
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+
+        while (InSuitcaseColliderDetector.ItemCount == 0 || pickupScript.HoldingObject)
+        {
+            yield return 0;
+        }
+
+        StartCoroutine(FadeInBackground());
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        MessageBox.ShowMessageBox("One down! Pack up the rest of the items as quickly as possible!");
+        yield return MessageBox.WaitForSubmit();
+
+        MessageBox.HideMessageBox();
+        StartCoroutine(FadeOutBackground());
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     private IEnumerator FadeInBackground()
@@ -70,13 +84,11 @@ public class Tutorial : MonoBehaviour
 
     private IEnumerator FadeOutBackground()
     {
-        Debug.Log("Coroutine started");
         Color backgroundColor = new Color(backgroundPanel.color.r, backgroundPanel.color.g, backgroundPanel.color.b, alphaMax);
 
         backgroundPanel.color = backgroundColor;
         yield return 0;
 
-        Debug.Log(backgroundColor.a);
         while (backgroundColor.a > 0)
         {
             backgroundColor.a -= Time.deltaTime * fadeOutSpeed;

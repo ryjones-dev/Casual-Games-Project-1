@@ -12,6 +12,8 @@ public class PickUp : MonoBehaviour {
 
     Transform m_heldObjectParent;
 
+    public bool HoldingObject { get { return objectInHand; } }
+
     // Use this for initialization
     void Start () {
     }

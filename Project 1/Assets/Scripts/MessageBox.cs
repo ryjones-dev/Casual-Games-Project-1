@@ -114,7 +114,7 @@ public class MessageBox : MonoBehaviour
 	/// </summary>
     public static void ShowMessageBox(string text, int fontSize, Color fontColor, Font font, FontStyle style)
     {
-        //Game.Pause(); // Pauses the game. Optional if using the Game class.
+        GameManager.Pause(); // Pauses the game.
 
         Instance.messageBox.SetActive(true); // Shows the message box.
         Instance.messageBoxEndIcon.enabled = false; // Disables the message box end icon.
@@ -149,7 +149,7 @@ public class MessageBox : MonoBehaviour
         Instance.messageBoxEndIcon.enabled = false; // Hides the message box end icon.
         Instance.messageBox.SetActive(false); // Hides the message box.
 
-        //Game.UnPause(); // Unpauses the game. Optional if using the Game class.
+        GameManager.Unpause(); // Unpauses the game.
     }
 
 	/// <summary>
