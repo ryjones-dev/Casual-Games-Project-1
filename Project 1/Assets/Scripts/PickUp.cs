@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class PickUp : MonoBehaviour {
     public GameObject hand;
+    public GameObject defaultModel;
+    public GameObject gripModel;
     private bool objectInHand = false;
     private GameObject heldObject;
     private const int PICK_UP_COOLDOWN = 20;
     private int currentCooldDown = 0;
     private bool onCooldown = false;
+    private Renderer defaultRenderer;
+    private Renderer gripRenderer;
 
     Transform m_heldObjectParent;
 
     // Use this for initialization
     void Start () {
+        defaultRenderer = defaultModel.GetComponent<Renderer>();
+        gripRenderer = gripModel.GetComponent<Renderer>();
     }
 
     // Update is called once per frame
@@ -76,6 +82,9 @@ public class PickUp : MonoBehaviour {
         heldObject = obj.gameObject;
 
         GameObject.Destroy(obj.GetComponent<Rigidbody>());
+
+        defaultRenderer.enabled = false;
+        gripRenderer.enabled = true;
     }
     void dropObject(GameObject toDrop){
         toDrop.transform.parent = null;
@@ -83,5 +92,8 @@ public class PickUp : MonoBehaviour {
         toDrop.AddComponent<Rigidbody>();
         objectInHand = false;
         heldObject = null;
+
+        defaultRenderer.enabled = true;
+        gripRenderer.enabled = false;
     }
 }
