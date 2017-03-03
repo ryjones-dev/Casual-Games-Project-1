@@ -22,6 +22,7 @@ public class PickUp : MonoBehaviour {
     void Start () {
         defaultRenderer = defaultModel.GetComponent<Renderer>();
         gripRenderer = gripModel.GetComponent<Renderer>();
+        gripRenderer.enabled = false;
     }
 
     // Update is called once per frame
@@ -85,6 +86,7 @@ public class PickUp : MonoBehaviour {
 
         GameObject.Destroy(obj.GetComponent<Rigidbody>());
 
+        Debug.Log("Disabling default renderer and enabling grip renderer");
         defaultRenderer.enabled = false;
         gripRenderer.enabled = true;
     }
@@ -95,6 +97,7 @@ public class PickUp : MonoBehaviour {
         objectInHand = false;
         heldObject = null;
 
+        Debug.Log("Enabling default renderer and disabling grip renderer");
         defaultRenderer.enabled = true;
         gripRenderer.enabled = false;
     }
