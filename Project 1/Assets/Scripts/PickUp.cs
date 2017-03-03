@@ -4,14 +4,22 @@ using UnityEngine;
 
 public class PickUp : MonoBehaviour {
     public GameObject hand;
+    public GameObject defaultModel;
+    public GameObject gripModel;
     private bool objectInHand = false;
     private GameObject heldObject;
     private const int PICK_UP_COOLDOWN = 20;
     private int currentCooldDown = 0;
     private bool onCooldown = false;
+    private Renderer defaultRenderer;
+    private Renderer gripRenderer;
+
+    Transform m_heldObjectParent;
 
     // Use this for initialization
     void Start () {
+        defaultRenderer = defaultModel.GetComponent<Renderer>();
+        gripRenderer = gripModel.GetComponent<Renderer>();
     }
 
     // Update is called once per frame
@@ -19,7 +27,7 @@ public class PickUp : MonoBehaviour {
     {
         if (!onCooldown)
         { 
-            if (Input.GetKeyDown("space"))
+            if (Input.GetButtonDown("Fire1"))
             {
                 if (heldObject != null)
                 {
@@ -48,16 +56,13 @@ public class PickUp : MonoBehaviour {
                 return;
             }
 
-            if (other.gameObject.tag == "intractable")
+            if (other.gameObject.tag == "Interactable")
             {
-                other.gameObject.transform.parent = hand.transform;
-                objectInHand = true;
-                heldObject = other.gameObject;
-
-                GameObject.Destroy(other.GetComponent<Rigidbody>());
+                pickUp(other.gameObject);
             }
         }
     }
+    
 
     //revist this and actually listen for input once we decide upon a key to bind the action of droping an object too
     private void OnPlayerInput(){
@@ -69,11 +74,26 @@ public class PickUp : MonoBehaviour {
         heldObject = null;
     }
 
-    private void dropObject(GameObject toDrop){
-        toDrop.transform.parent = null;
+    void pickUp(GameObject obj)
+    {
+        m_heldObjectParent = obj.transform.parent;
+        obj.transform.parent = hand.transform;
+        objectInHand = true;
+        heldObject = obj.gameObject;
 
+        GameObject.Destroy(obj.GetComponent<Rigidbody>());
+
+        defaultRenderer.enabled = false;
+        gripRenderer.enabled = true;
+    }
+    void dropObject(GameObject toDrop){
+        toDrop.transform.parent = null;
+        toDrop.transform.parent = m_heldObjectParent;
         toDrop.AddComponent<Rigidbody>();
         objectInHand = false;
         heldObject = null;
+
+        defaultRenderer.enabled = true;
+        gripRenderer.enabled = false;
     }
 }

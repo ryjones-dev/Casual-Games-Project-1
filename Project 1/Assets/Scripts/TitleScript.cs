@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class TitleScript : MonoBehaviour {
 
     public GameObject persistent;
+    public string levelName;
 
 	// Use this for initialization
 	void Start () {
@@ -24,6 +25,6 @@ public class TitleScript : MonoBehaviour {
 
     public void LoadFirstLevel()
     {
-        SceneManager.LoadScene("level_1");
+        SceneManager.LoadScene(levelName);
     }
 }
