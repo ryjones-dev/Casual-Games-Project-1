@@ -62,10 +62,6 @@ public class Hand : MonoBehaviour
             {
                 ResetRotation();
             }
-            else
-            {
-                HandleMovement();
-            }
 
             transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
         }
@@ -85,9 +81,14 @@ public class Hand : MonoBehaviour
         yRotationDelta -= yRot;
     } May have possible use for this as a helper function in the future. Feel free to delete if this seems useless */
 
-    private void HandleMovement()
+    private void FixedUpdate()
     {
-        body.velocity += new Vector3(Input.GetAxis("Mouse X") * horizontalSpeed * Time.deltaTime, Input.mouseScrollDelta.y * verticalSpeed * Time.deltaTime, Input.GetAxis("Mouse Y") * horizontalSpeed * Time.deltaTime);
+        if (!GameManager.Paused)
+        {
+            Vector3 horizontal = new Vector3(Input.GetAxis("Mouse X") * horizontalSpeed, 0, Input.GetAxis("Mouse Y") * horizontalSpeed);
+            Vector3 vertical = new Vector3(0, Input.mouseScrollDelta.y * verticalSpeed, 0);
+            body.AddForce(horizontal + vertical, ForceMode.VelocityChange);
+        } 
     }
 
     private void HandleRotation()
