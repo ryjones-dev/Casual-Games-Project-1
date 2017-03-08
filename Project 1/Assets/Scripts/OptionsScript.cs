@@ -52,7 +52,8 @@ public class OptionsScript : MonoBehaviour {
         {
             if (Input.GetKeyDown("escape")) //esc opens and closes options menu
             {
-                if (settingsPanel.activeSelf) //close menu if it is open
+                if(GameManager.Paused) //close menu if it is open
+                //if (settingsPanel.activeSelf) 
                 {
                     CancelSettings();
                 }
@@ -64,14 +65,17 @@ public class OptionsScript : MonoBehaviour {
 
                     settingsPanel.SetActive(true);
                     escPanel.SetActive(false);
+                    GameManager.Pause();
                 }
             }
         }
-        else if (settingsPanel.activeSelf) //if options menu was deactivated, cancel settings
+        else if(GameManager.Paused)
+        //else if (settingsPanel.activeSelf) //if options menu was deactivated, cancel settings
         {
-            CancelSettings();
+            //CancelSettings();
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+            //GameManager.Unpause();
         }
     }
 
@@ -92,6 +96,7 @@ public class OptionsScript : MonoBehaviour {
         //deselect button, otherwise last-hit button will appear to be highlighted until a new button is hit, 
         //seems like weird default behavior personally
         EventSystem.current.SetSelectedGameObject(null);
+        GameManager.Unpause();
     }
 
     //close settings menu, revert settings to last accepted values
@@ -109,11 +114,15 @@ public class OptionsScript : MonoBehaviour {
         escPanel.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
+        GameManager.Unpause();
     }
 
     public void LoadTitle()
     {
         SceneManager.LoadScene("Title");
+        CancelSettings();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void QuitGame()

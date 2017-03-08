@@ -4,14 +4,25 @@ using UnityEngine;
 
 public class PickUp : MonoBehaviour {
     public GameObject hand;
+    public GameObject defaultModel;
+    public GameObject gripModel;
     private bool objectInHand = false;
     private GameObject heldObject;
     private const int PICK_UP_COOLDOWN = 20;
     private int currentCooldDown = 0;
     private bool onCooldown = false;
+    private Renderer defaultRenderer;
+    private Renderer gripRenderer;
+
+    Transform m_heldObjectParent;
+
+    public bool HoldingObject { get { return objectInHand; } }
 
     // Use this for initialization
     void Start () {
+        defaultRenderer = defaultModel.GetComponent<Renderer>();
+        gripRenderer = gripModel.GetComponent<Renderer>();
+        gripRenderer.enabled = false;
     }
 
     // Update is called once per frame
@@ -50,14 +61,11 @@ public class PickUp : MonoBehaviour {
 
             if (other.gameObject.tag == "Interactable")
             {
-                other.gameObject.transform.parent = hand.transform;
-                objectInHand = true;
-                heldObject = other.gameObject;
-
-                GameObject.Destroy(other.GetComponent<Rigidbody>());
+                pickUp(other.gameObject);
             }
         }
     }
+    
 
     //revist this and actually listen for input once we decide upon a key to bind the action of droping an object too
     private void OnPlayerInput(){
@@ -69,11 +77,28 @@ public class PickUp : MonoBehaviour {
         heldObject = null;
     }
 
-    private void dropObject(GameObject toDrop){
-        toDrop.transform.parent = null;
+    void pickUp(GameObject obj)
+    {
+        m_heldObjectParent = obj.transform.parent;
+        obj.transform.parent = hand.transform;
+        objectInHand = true;
+        heldObject = obj.gameObject;
 
+        GameObject.Destroy(obj.GetComponent<Rigidbody>());
+
+        Debug.Log("Disabling default renderer and enabling grip renderer");
+        defaultRenderer.enabled = false;
+        gripRenderer.enabled = true;
+    }
+    void dropObject(GameObject toDrop){
+        toDrop.transform.parent = null;
+        toDrop.transform.parent = m_heldObjectParent;
         toDrop.AddComponent<Rigidbody>();
         objectInHand = false;
         heldObject = null;
+
+        Debug.Log("Enabling default renderer and disabling grip renderer");
+        defaultRenderer.enabled = true;
+        gripRenderer.enabled = false;
     }
 }

@@ -5,6 +5,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Hand : MonoBehaviour
 {
+    private GameObject persistent;
+    private OptionsScript optionsScript;
+
     public float horizontalSpeed = 10;
     public float verticalSpeed = 10;
     public float maxHeight = 5;
@@ -24,25 +27,48 @@ public class Hand : MonoBehaviour
         Cursor.visible = false;
 
         body = GetComponent<Rigidbody>();
+
+        //store persistent and options script
+        persistent = GameObject.Find("Persistent");
+        GameObject optionsMenu = persistent.transform.Find("OptionsMenu").gameObject;
+        optionsScript = optionsMenu.GetComponent<OptionsScript>();
     }
 
     private void Update()
     {
-        // Handle rotation when holding RMB, or handle moving otherwise
-        if (Input.GetButton("Fire2"))
+        if (!GameManager.Paused) //do not register player input when game is paused
         {
-            HandleRotation();
-        }
-        else if (Input.GetMouseButtonDown(2))
-        {
-            ResetRotation();
-        }
-        else
-        {
-            HandleMovement();
-        }
+            //handle options menu settings
+            horizontalSpeed = optionsScript.mouseSensitivity * 10;
+            verticalSpeed = optionsScript.mouseSensitivity * 10;
+            if (optionsScript.mouseMovementInverted)
+            {
+                horizontalSpeed *= -1;
+                verticalSpeed *= -1;
+            }
 
-        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
+            rotationSensitivity = optionsScript.mouseSensitivity * 5.0f;
+            if (optionsScript.mouseRotationInverted)
+            {
+                rotationSensitivity *= -1;
+            }
+
+            // Handle rotation when holding RMB, or handle moving otherwise
+            if (Input.GetButton("Fire2"))
+            {
+                HandleRotation();
+            }
+            else if (Input.GetMouseButtonDown(2))
+            {
+                ResetRotation();
+            }
+            else
+            {
+                HandleMovement();
+            }
+
+            transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
+        }
     }
 
     private void ResetRotation()
@@ -71,7 +97,7 @@ public class Hand : MonoBehaviour
         float hScale = 1.0f / Screen.height * 360 * rotationSensitivity;
 
         //get mouse movements from last frame
-        Vector2 mouseDelta = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 mouseDelta = new Vector2(optionsScript.mouseSensitivity * Input.GetAxis("Mouse X"), optionsScript.mouseSensitivity * Input.GetAxis("Mouse Y"));
 
         //calculate rotaion angles around X and Y axises
         float xRot = mouseDelta.y * wScale;
