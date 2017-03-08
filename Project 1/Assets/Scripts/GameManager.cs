@@ -5,19 +5,29 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
 
-    private Canvas optionsMenu;
+    public static GameManager instance;
 
+    private Canvas optionsMenu;
+    private OptionsScript options;
+
+    public bool gamePaused;
 
 	// Use this for initialization
 	void Start () {
-        DontDestroyOnLoad(this);
+        if (instance == null)
+        {
+            DontDestroyOnLoad(this);
 
-        GameObject optionsObject = this.transform.Find("OptionsMenu").gameObject;
-        optionsMenu = optionsObject.GetComponent<Canvas>();
+            GameObject optionsObject = this.transform.Find("OptionsMenu").gameObject;
+            optionsMenu = optionsObject.GetComponent<Canvas>();
+            options = optionsMenu.GetComponent<OptionsScript>();
+            instance = this;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        gamePaused = options.gamePaused;
 		if(SceneManager.GetActiveScene().name == "Title"){
             optionsMenu.enabled = false;
         }
