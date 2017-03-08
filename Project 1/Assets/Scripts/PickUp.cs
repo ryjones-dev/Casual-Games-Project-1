@@ -89,6 +89,16 @@ public class PickUp : MonoBehaviour {
         Debug.Log("Disabling default renderer and enabling grip renderer");
         defaultRenderer.enabled = false;
         gripRenderer.enabled = true;
+
+
+        //96969696 Color(.2, .2, .2, 1)
+        //FF333396 Color(.5, 0, 0, 1)
+
+        //     Material material = new Material(Shader.Find("Custom/CelShadingForward"));
+        // material.color = Color(.5, 0, 0, 1);
+
+        defaultRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
+        gripRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
     }
     void dropObject(GameObject toDrop){
         toDrop.transform.parent = null;
@@ -100,5 +110,8 @@ public class PickUp : MonoBehaviour {
         Debug.Log("Enabling default renderer and disabling grip renderer");
         defaultRenderer.enabled = true;
         gripRenderer.enabled = false;
+
+        defaultRenderer.material.color = new Color(0.5f, 0.5f, 0.5f, 0.05f);
+        gripRenderer.material.color = new Color(0.5f, 0.5f, 0.5f, 0.05f);
     }
 }
