@@ -28,7 +28,7 @@ public class PickUp : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (!onCooldown)
+        if (!onCooldown && !GameManager.Paused)
         { 
             if (Input.GetButtonDown("Fire1"))
             {
@@ -86,9 +86,10 @@ public class PickUp : MonoBehaviour {
 
         GameObject.Destroy(obj.GetComponent<Rigidbody>());
 
-        Debug.Log("Disabling default renderer and enabling grip renderer");
         defaultRenderer.enabled = false;
         gripRenderer.enabled = true;
+
+        //Physics.IgnoreCollision(transform.parent.GetComponent<Collider>(), obj.GetComponent<Collider>());
     }
     void dropObject(GameObject toDrop){
         toDrop.transform.parent = null;
@@ -100,5 +101,7 @@ public class PickUp : MonoBehaviour {
         Debug.Log("Enabling default renderer and disabling grip renderer");
         defaultRenderer.enabled = true;
         gripRenderer.enabled = false;
+
+        //Physics.IgnoreCollision(transform.parent.GetComponent<Collider>(), toDrop.GetComponent<Collider>(), false);
     }
 }
