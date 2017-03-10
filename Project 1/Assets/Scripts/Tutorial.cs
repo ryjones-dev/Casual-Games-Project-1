@@ -12,9 +12,14 @@ public class Tutorial : MonoBehaviour
     public float fadeInSpeed;
     public float fadeOutSpeed;
     public float alphaMax;
+    public float blinkTimer;
+
+    private GameObject controls;
 
     private void Start()
     {
+        controls = transform.FindChild("Canvas").FindChild("Controls").gameObject;
+
         StartCoroutine(BeginTutorial());
     }
 
@@ -24,6 +29,10 @@ public class Tutorial : MonoBehaviour
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         MessageBox.ShowMessageBox("You're going to miss your plane! Pack up as much as you can within the time limit!");
+        yield return MessageBox.WaitForSubmit();
+
+        MessageBox.ShowMessageBox("Review the controls to learn how to move your hand around and interact with objects.");
+        StartCoroutine(BlinkControls());
         yield return MessageBox.WaitForSubmit();
 
         MessageBox.HideMessageBox();
@@ -51,6 +60,9 @@ public class Tutorial : MonoBehaviour
         {
             yield return 0;
         }
+
+        Debug.Log(InSuitcaseColliderDetector.ItemCount);
+        Debug.Log(pickupScript.HoldingObject);
 
         StartCoroutine(FadeInBackground());
         Cursor.visible = true;
@@ -98,5 +110,23 @@ public class Tutorial : MonoBehaviour
 
         backgroundColor.a = 0;
         backgroundPanel.color = backgroundColor;
+    }
+
+    private IEnumerator BlinkControls()
+    {
+        float timer = 0;
+
+        while(MessageBox.IsActive)
+        {
+            if(timer >= blinkTimer)
+            {
+                timer = 0;
+                controls.SetActive(!controls.activeSelf);
+            }
+
+            timer += Time.deltaTime;
+
+            yield return 0;
+        }
     }
 }

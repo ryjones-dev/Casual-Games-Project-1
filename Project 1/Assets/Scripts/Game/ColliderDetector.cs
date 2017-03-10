@@ -9,7 +9,7 @@ public class ColliderDetector : MonoBehaviour {
     List<DEL_COLLIDER> m_evntCollideds = new List<DEL_COLLIDER>();
     List<Collider> m_colliders = new List<Collider>();
 
-    public int ItemCount { get { return m_colliders.Count; } }
+    public int ItemCount { get { return m_evntCollideds.Count; } }
 
     // Use this for initialization
     void Start () {
