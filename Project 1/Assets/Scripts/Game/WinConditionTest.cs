@@ -14,11 +14,16 @@ public class WinConditionTest : MonoBehaviour {
     bool 
         m_isAllitemsInside  = false,     //True if all items are inside the detector
         m_isAnyItemColliding = true;   //True if any item is colliding with cover
-	void Start () {
-		
+
+    public GameUIScript gameUI;
+
+    void Start () {
+        GameObject gui = GameObject.Find("GameUI");
+        gameUI = gui.GetComponent<GameUIScript>();
 	}
     void hdrCheckWinningCondition(List<Collider> collider)
     {
+        int s = 0; //score temp var
 
         for (int i = 0; i < m_objs.Count; i++)
         {
@@ -28,6 +33,7 @@ public class WinConditionTest : MonoBehaviour {
             {
                 if (collider[j].gameObject == obj)
                 {
+                    s += 1500;
                     isPresent = true;
                     break;
                 }
@@ -47,6 +53,8 @@ public class WinConditionTest : MonoBehaviour {
         }
         m_isAllitemsInside = true;
         //m_winningScreen.SetActive(true);
+
+        gameUI.score = s;
     }
     NGame.ItemInfo getItemInfo(GameObject obj)
     {
