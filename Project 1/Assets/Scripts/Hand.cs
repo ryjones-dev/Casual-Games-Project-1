@@ -36,7 +36,7 @@ public class Hand : MonoBehaviour
 
     private void Update()
     {
-        if (!optionsScript.gamePaused) //do not register player input when game is paused
+        if (!GameManager.Paused) //do not register player input when game is paused
         {
             //handle options menu settings
             horizontalSpeed = optionsScript.mouseSensitivity * 10;
@@ -52,8 +52,6 @@ public class Hand : MonoBehaviour
             {
                 rotationSensitivity *= -1;
             }
-
-            Debug.Log(horizontalSpeed + " " + verticalSpeed);
 
             // Handle rotation when holding RMB, or handle moving otherwise
             if (Input.GetButton("Fire2"))

@@ -43,7 +43,7 @@ public class GameUIScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (!gm.gamePaused)
+        if (!GameManager.Paused)
         {
             if (timeRemaining > 0)
             {
