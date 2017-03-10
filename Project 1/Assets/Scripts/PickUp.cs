@@ -28,7 +28,7 @@ public class PickUp : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (!onCooldown)
+        if (!onCooldown && !GameManager.Paused)
         { 
             if (Input.GetButtonDown("Fire1"))
             {
@@ -86,16 +86,8 @@ public class PickUp : MonoBehaviour {
 
         GameObject.Destroy(obj.GetComponent<Rigidbody>());
 
-        Debug.Log("Disabling default renderer and enabling grip renderer");
         defaultRenderer.enabled = false;
         gripRenderer.enabled = true;
-
-
-        //96969696 Color(.2, .2, .2, 1)
-        //FF333396 Color(.5, 0, 0, 1)
-
-        //     Material material = new Material(Shader.Find("Custom/CelShadingForward"));
-        // material.color = Color(.5, 0, 0, 1);
 
         defaultRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
         gripRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
