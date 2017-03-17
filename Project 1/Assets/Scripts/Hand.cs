@@ -6,13 +6,13 @@ using UnityEngine;
 public class Hand : MonoBehaviour
 {
     private GameObject persistent;
-    private OptionsScript optionsScript;
 
-    public float horizontalSpeed = 10;
-    public float verticalSpeed = 10;
+    //public float speedHor = 10;
+    //public float speedVer = 10;
+    //public float speedRot = 5.0f; //change to increase mouse sensitivity
+
     public float maxHeight = 5;
     public float minHeight = 0;
-    public float rotationSensitivity = 5.0f; //change to increase mouse sensitivity
 
     private Rigidbody body;
 
@@ -30,45 +30,43 @@ public class Hand : MonoBehaviour
 
         //store persistent and options script
         persistent = GameObject.Find("Persistent");
-        GameObject optionsMenu = persistent.transform.Find("OptionsMenu").gameObject;
-        optionsScript = optionsMenu.GetComponent<OptionsScript>();
+        //GameObject optionsMenu = persistent.transform.Find("OptionsMenu").gameObject;
+        //optionsScript = optionsMenu.GetComponent<OptionsScript>();
     }
 
-    private void Update()
+    public void kUpdate(float speedHor, float speedVer, float speedRot, bool isInverted)
     {
-        if (!GameManager.Paused) //do not register player input when game is paused
+        updateMovement(speedHor,  speedVer,  speedRot,  isInverted);
+    }
+    void updateMovement(float speedHor, float speedVer, float speedRot, bool isInverted)
+    {
+        
+        if (isInverted)
         {
-            //handle options menu settings
-            horizontalSpeed = optionsScript.mouseSensitivity * 10;
-            verticalSpeed = optionsScript.mouseSensitivity * 10;
-            if (optionsScript.mouseMovementInverted)
-            {
-                horizontalSpeed *= -1;
-                verticalSpeed *= -1;
-            }
-
-            rotationSensitivity = optionsScript.mouseSensitivity * 5.0f;
-            if (optionsScript.mouseRotationInverted)
-            {
-                rotationSensitivity *= -1;
-            }
-
-            // Handle rotation when holding RMB, or handle moving otherwise
-            if (Input.GetButton("Fire2"))
-            {
-                HandleRotation();
-            }
-            else if (Input.GetMouseButtonDown(2))
-            {
-                ResetRotation();
-            }
-            else
-            {
-                HandleMovement();
-            }
-
-            transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
+            speedHor *= -1;
+            speedVer *= -1;
         }
+        
+        if (isInverted)
+        {
+            speedRot *= -1;
+        }
+
+        // Handle rotation when holding RMB, or handle moving otherwise
+        if (Input.GetButton("Fire2"))
+        {
+            HandleRotation(speedHor, speedVer,speedRot);
+        }
+        else if (Input.GetMouseButtonDown(2))
+        {
+            ResetRotation();
+        }
+        else
+        {
+            HandleMovement(speedHor, speedVer);
+        }
+
+        transform.position = new Vector3(transform.position.x, Mathf.Clamp(transform.position.y, minHeight, maxHeight), transform.position.z);
     }
 
     private void ResetRotation()
@@ -85,19 +83,19 @@ public class Hand : MonoBehaviour
         yRotationDelta -= yRot;
     } May have possible use for this as a helper function in the future. Feel free to delete if this seems useless */
 
-    private void HandleMovement()
+    private void HandleMovement(float speedHor, float speedVer)
     {
-        body.velocity += new Vector3(Input.GetAxis("Mouse X") * horizontalSpeed * Time.deltaTime, Input.mouseScrollDelta.y * verticalSpeed * Time.deltaTime, Input.GetAxis("Mouse Y") * horizontalSpeed * Time.deltaTime);
+        body.velocity += new Vector3(Input.GetAxis("Mouse X") * speedHor * Time.deltaTime, Input.mouseScrollDelta.y * speedVer * Time.deltaTime, Input.GetAxis("Mouse Y") * speedHor * Time.deltaTime);
     }
 
-    private void HandleRotation()
+    private void HandleRotation(float speedHor, float speedVer, float speedRot)
     {
         //scale rotations based on screen width and screen height
-        float wScale = 1.0f / Screen.width * 360 * rotationSensitivity;
-        float hScale = 1.0f / Screen.height * 360 * rotationSensitivity;
+        float wScale = 1.0f / Screen.width * 360;// * speedRot;
+        float hScale = 1.0f / Screen.height * 360;// * speedRot;
 
         //get mouse movements from last frame
-        Vector2 mouseDelta = new Vector2(optionsScript.mouseSensitivity * Input.GetAxis("Mouse X"), optionsScript.mouseSensitivity * Input.GetAxis("Mouse Y"));
+        Vector2 mouseDelta = new Vector2(speedRot * Input.GetAxis("Mouse X"), speedRot * Input.GetAxis("Mouse Y"));
 
         //calculate rotaion angles around X and Y axises
         float xRot = mouseDelta.y * wScale;

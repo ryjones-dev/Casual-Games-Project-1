@@ -25,13 +25,11 @@ public class GameUIScript : MonoBehaviour {
     private int timerMinutes;
     private int timerSeconds;
     private float timeRemaining;
-
-    private GameManager gm;
+    
 
 	// Use this for initialization
 	void Start () {
         timeRemaining = timeInitial;
-        gm = GameManager.instance;
 
         //set up score UI to initial values
         progressFullScale = progressBar.transform.localScale.x;
@@ -43,22 +41,19 @@ public class GameUIScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (!GameManager.Paused)
+        if (timeRemaining > 0)
         {
-            if (timeRemaining > 0)
-            {
-                timeRemaining -= Time.deltaTime;
-                if (timeRemaining < 0) { timeRemaining = 0; }
-                UpdateTimerUI();
-            }
-
-            //if score has changed, modify score UI
-            if (score != scoreLast)
-            {
-                UpdateScoreUI();
-            }
+            timeRemaining -= Time.deltaTime;
+            if (timeRemaining < 0) { timeRemaining = 0; }
+            UpdateTimerUI();
         }
-	}
+
+        //if score has changed, modify score UI
+        if (score != scoreLast)
+        {
+            UpdateScoreUI();
+        }
+    }
 
     //updates timer UI to show time remaining in the user-friendly minute:second format
     private void UpdateTimerUI()

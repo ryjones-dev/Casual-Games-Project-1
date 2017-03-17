@@ -26,9 +26,9 @@ public class PickUp : MonoBehaviour {
     }
 
     // Update is called once per frame
-    void Update()
+    public void kUpdate()
     {
-        if (!onCooldown && !GameManager.Paused)
+        if (!onCooldown )
         { 
             if (Input.GetButtonDown("Fire1"))
             {
