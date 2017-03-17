@@ -114,7 +114,7 @@ public class MessageBox : MonoBehaviour
 	/// </summary>
     public static void ShowMessageBox(string text, int fontSize, Color fontColor, Font font, FontStyle style)
     {
-
+        GameSettings.STATE = GameSettings.GAME_STATE.PAUSED;
         Instance.messageBox.SetActive(true); // Shows the message box.
         Instance.messageBoxEndIcon.enabled = false; // Disables the message box end icon.
 
@@ -147,6 +147,7 @@ public class MessageBox : MonoBehaviour
         Instance.characterCount = 0;
         Instance.messageBoxEndIcon.enabled = false; // Hides the message box end icon.
         Instance.messageBox.SetActive(false); // Hides the message box.
+        GameSettings.STATE = GameSettings.GAME_STATE.PLAYING;
         
     }
 
