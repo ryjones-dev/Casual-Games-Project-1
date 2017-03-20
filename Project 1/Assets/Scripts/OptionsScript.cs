@@ -27,7 +27,9 @@ public class OptionsScript : MonoBehaviour {
     private Canvas canvas;
 
     public enum OPTION_STATE {CLOSED,OPEN};
+    GameSettings.GAME_STATE m_previousGameState;
     OPTION_STATE m_state = OPTION_STATE.CLOSED;
+
 
     // Use this for initialization
     void Start () {
@@ -67,7 +69,8 @@ public class OptionsScript : MonoBehaviour {
         settingsPanel.SetActive(true);
         escPanel.SetActive(false);
 
-        GameSettings.STATE = GameSettings.GAME_STATE.PAUSED;
+        m_previousGameState = GameSettings.STATE;
+        GameSettings.STATE = GameSettings.GAME_STATE.FROZEN;
     }
     void closeOption()
     {
@@ -78,7 +81,7 @@ public class OptionsScript : MonoBehaviour {
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
-        GameSettings.STATE = GameSettings.GAME_STATE.PLAYING;
+        GameSettings.STATE = m_previousGameState;
         CancelSettings();
     }
     // Update is called once per frame
