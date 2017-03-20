@@ -26,6 +26,9 @@ public class OptionsScript : MonoBehaviour {
 
     private Canvas canvas;
 
+    public enum OPTION_STATE {CLOSED,OPEN};
+    OPTION_STATE m_state = OPTION_STATE.CLOSED;
+
     // Use this for initialization
     void Start () {
         
@@ -45,56 +48,68 @@ public class OptionsScript : MonoBehaviour {
 
         canvas = gameObject.GetComponent<Canvas>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        /*
-        if (canvas.enabled) //do nothing if options menu is not "active"
-        {
-            if (Input.GetKeyDown("escape")) //esc opens and closes options menu
-            {
-                if(GameManager.Paused) //close menu if it is open
-                //if (settingsPanel.activeSelf) 
-                {
-                    CancelSettings();
-                }
-                else //open menu if it is closed
-                {
-                    Cursor.visible = true;
-                    prevLockMode = Cursor.lockState;
-                    Cursor.lockState = CursorLockMode.None;
+    void setState(OPTION_STATE state)
+    {
+        if(m_state == state) return;
+        m_state = state;
+        if (m_state == OPTION_STATE.OPEN)
+            openOption();
+        else closeOption();
+    }
 
-                    settingsPanel.SetActive(true);
-                    escPanel.SetActive(false);
-                    GameManager.Pause();
-                }
+    void openOption()
+    {
+        canvas.enabled = true;
+        Cursor.visible = true;
+        prevLockMode = Cursor.lockState;
+        Cursor.lockState = CursorLockMode.None;
+
+        settingsPanel.SetActive(true);
+        escPanel.SetActive(false);
+
+        GameSettings.STATE = GameSettings.GAME_STATE.PAUSED;
+    }
+    void closeOption()
+    {
+        canvas.enabled = false;
+        Cursor.visible = false;
+        Cursor.lockState = prevLockMode;
+
+        settingsPanel.SetActive(false);
+        escPanel.SetActive(true);
+
+        GameSettings.STATE = GameSettings.GAME_STATE.PLAYING;
+        CancelSettings();
+    }
+    // Update is called once per frame
+    void Update () {
+        if (Input.GetKeyDown("escape")) //esc opens and closes options menu
+        {
+            if (m_state == OPTION_STATE.CLOSED)
+                setState(OPTION_STATE.OPEN);
+            else
+            {
+                setState(OPTION_STATE.CLOSED);
+
             }
+
         }
         
-        else if(GameManager.Paused)
-        //else if (settingsPanel.activeSelf) //if options menu was deactivated, cancel settings
-        {
-            //CancelSettings();
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-            //GameManager.Unpause();
-        }
-         * */
     }
 
     //apply new settings and close menu
     public void ChangeSettings()
     {
-        Cursor.visible = false;
-        Cursor.lockState = prevLockMode;
+        //Cursor.visible = false;
+        //Cursor.lockState = prevLockMode;
 
         mouseSensitivity = mouse.value;
         mouseMovementInverted = invertMouseMovement.isOn;
         mouseRotationInverted = invertMouseRotation.isOn;
         musicVolume = music.value;
         soundEffectVolume = sound.value;
-        settingsPanel.SetActive(false);
-        escPanel.SetActive(true);
+        //settingsPanel.SetActive(false);
+        //escPanel.SetActive(true);
 
         //deselect button, otherwise last-hit button will appear to be highlighted until a new button is hit, 
         //seems like weird default behavior personally
@@ -104,16 +119,16 @@ public class OptionsScript : MonoBehaviour {
     //close settings menu, revert settings to last accepted values
     public void CancelSettings()
     {
-        Cursor.visible = false;
-        Cursor.lockState = prevLockMode;
+        //Cursor.visible = false;
+        //Cursor.lockState = prevLockMode;
 
         mouse.value = mouseSensitivity;
         invertMouseMovement.isOn = mouseMovementInverted;
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
         sound.value = soundEffectVolume;
-        settingsPanel.SetActive(false);
-        escPanel.SetActive(true);
+        //settingsPanel.SetActive(false);
+        //escPanel.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
     }
