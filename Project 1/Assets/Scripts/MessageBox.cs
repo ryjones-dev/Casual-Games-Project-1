@@ -96,6 +96,8 @@ public class MessageBox : MonoBehaviour
     // Update is called once every frame.
     private void Update()
     {
+        if (GameSettings.STATE == GameSettings.GAME_STATE.FROZEN) return;
+
 		// If the submit button is being pressed down, set the current text speed to the fast text speed.
         if(Input.GetButtonDown("Submit"))
         {
@@ -206,6 +208,11 @@ public class MessageBox : MonoBehaviour
 		// Loops through each word in the words array.
         foreach(string word in words)
         {
+            while(GameSettings.STATE == GameSettings.GAME_STATE.FROZEN)
+            {
+                yield return null;
+
+            }
 			// Adds a word and a space to the message box text simply to see if the word will fit in the box.
             message.text += word + " ";
 
