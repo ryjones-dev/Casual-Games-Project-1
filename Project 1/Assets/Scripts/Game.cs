@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 
 public class Game : MonoBehaviour
-{
+{/*
     [SerializeField]
     OptionsScript m_optionScript;
     [SerializeField]
@@ -19,5 +19,5 @@ public class Game : MonoBehaviour
         m_pickUp.kUpdate();
         hand.kUpdate(GameSettings.MOUSE_SENSITIVITY_HORIZONTAL, GameSettings.MOUSE_SENSITIVITY_VERTICAL, GameSettings.MOUSE_SENSITIVITY_HORIZONTAL, GameSettings.IS_MOUSE_INPUT_INVERTED);
 
-    }
+    }*/
 }

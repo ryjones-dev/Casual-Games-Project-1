@@ -6,6 +6,7 @@ public class PickUp : MonoBehaviour {
     public GameObject hand;
     public GameObject defaultModel;
     public GameObject gripModel;
+    public GameObject handBase;
     private bool objectInHand = false;
     private GameObject heldObject;
     private const int PICK_UP_COOLDOWN = 20;
@@ -13,6 +14,9 @@ public class PickUp : MonoBehaviour {
     private bool onCooldown = false;
     private Renderer defaultRenderer;
     private Renderer gripRenderer;
+    private bool isHookedToPivot = false;
+    private float rotationSpeed = 100.0f;
+    private GameObject pivotObjectHeld;
 
     Transform m_heldObjectParent;
 
@@ -26,8 +30,13 @@ public class PickUp : MonoBehaviour {
     }
 
     // Update is called once per frame
-    public void kUpdate()
+    public void Update()
     {
+        if (isHookedToPivot)
+        {
+            pivotOnMovement();
+        }
+
         if (!onCooldown )
         { 
             if (Input.GetButtonDown("Fire1"))
@@ -35,6 +44,12 @@ public class PickUp : MonoBehaviour {
                 if (heldObject != null)
                 {
                     dropObject(heldObject);
+                    onCooldown = true;
+                }
+
+                if(pivotObjectHeld != null)
+                {
+                    unHookFromPivot(pivotObjectHeld);
                     onCooldown = true;
                 }
             }
@@ -63,9 +78,36 @@ public class PickUp : MonoBehaviour {
             {
                 pickUp(other.gameObject);
             }
+
+            if(other.gameObject.tag == "Pivotable")
+            {
+                hookToPivot(other.gameObject);
+            }
         }
     }
-    
+
+    private void pivotOnMovement()
+    {
+        float rotation = Input.GetAxis("Vertical") * rotationSpeed;
+        rotation *= Time.deltaTime;
+        pivotObjectHeld.transform.Rotate(rotation, 0, 0);
+    }
+
+    private void hookToPivot(GameObject obj)
+    {
+        isHookedToPivot = true;
+        pivotObjectHeld = obj;
+        ((MonoBehaviour)handBase.GetComponent("Hand")).enabled = false;
+        handBase.transform.parent = pivotObjectHeld.transform;
+    }
+
+    private void unHookFromPivot(GameObject obj)
+    {
+        isHookedToPivot = false;
+        pivotObjectHeld = null;
+        ((MonoBehaviour)handBase.GetComponent("Hand")).enabled = true;
+        handBase.transform.parent = null;
+    }
 
     //revist this and actually listen for input once we decide upon a key to bind the action of droping an object too
     private void OnPlayerInput(){
