@@ -28,10 +28,6 @@ public class TitleScript : MonoBehaviour {
         options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
         game = GameObject.Find("GameUI").GetComponent<GameUIScript>();
         audio.volume = options.musicVolume;
-        /*
-        audio.clip = titleBGM;
-        audio.playOnAwake=true;
-        */
 	}
 	
 	// Update is called once per frame
@@ -41,7 +37,7 @@ public class TitleScript : MonoBehaviour {
 
     public void LoadFirstLevel()
     {
-        game.SetGoalAndTime(5000, 1);
+        game.SetGoalAndTime(5000, 60);
         SceneManager.LoadScene(levelName);
     }
 }
