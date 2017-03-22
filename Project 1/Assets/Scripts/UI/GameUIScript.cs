@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class GameUIScript : MonoBehaviour {
 
     private Canvas canvas;
+    private OptionsScript options;
 
     public Text timer;
     public float timeInitial = 70;
@@ -24,11 +26,16 @@ public class GameUIScript : MonoBehaviour {
 
     private int timerMinutes;
     private int timerSeconds;
+    private int secondsPrevious=0;
     private float timeRemaining;
-    
 
+    private AudioSource audio;
+    public AudioClip timerTick;
 	// Use this for initialization
 	void Start () {
+        canvas = GetComponent<Canvas>();
+        audio = GetComponent<AudioSource>();
+        options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
         timeRemaining = timeInitial;
 
         //set up score UI to initial values
@@ -38,20 +45,31 @@ public class GameUIScript : MonoBehaviour {
         UpdateScoreUI();
 
     }
-	
-	// Update is called once per frame
-	void Update () {
-        if (timeRemaining > 0)
-        {
-            timeRemaining -= Time.deltaTime;
-            if (timeRemaining < 0) { timeRemaining = 0; }
-            UpdateTimerUI();
-        }
 
-        //if score has changed, modify score UI
-        if (score != scoreLast)
+    // Update is called once per frame
+    void Update() {
+        if (SceneManager.GetActiveScene().buildIndex == 0) //no ui on title screen
         {
-            UpdateScoreUI();
+            canvas.enabled = false;
+            return;
+        }
+        else
+        {
+            canvas.enabled = true;
+        }
+        if(GameSettings.STATE == GameSettings.GAME_STATE.PLAYING){
+            if (timeRemaining > 0)
+            {
+                timeRemaining -= Time.deltaTime;
+                if (timeRemaining < 0) { timeRemaining = 0; }
+                UpdateTimerUI();
+            }
+
+            //if score has changed, modify score UI
+            if (score != scoreLast)
+            {
+                UpdateScoreUI();
+            }
         }
     }
 
@@ -60,9 +78,19 @@ public class GameUIScript : MonoBehaviour {
     {
         timerMinutes = (int)timeRemaining / 60;
         timerSeconds = (int)timeRemaining % 60;
+        if(timerSeconds != secondsPrevious)
+        {
+            audio.PlayOneShot(timerTick,options.soundEffectVolume/5);
+            secondsPrevious = timerSeconds;
+        }
         string secondstring = "" + timerSeconds;
         if (timerSeconds < 10) { secondstring = "0" + secondstring; }
         timer.text = timerMinutes + ":" + secondstring;
+
+        if(timeRemaining <= 0)
+        {
+            SceneManager.LoadScene("GameOver");
+        }
     }
 
     private void UpdateScoreUI() {

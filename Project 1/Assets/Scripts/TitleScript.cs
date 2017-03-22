@@ -8,6 +8,10 @@ public class TitleScript : MonoBehaviour {
     public GameObject persistent;
     public string levelName;
 
+    private OptionsScript options;
+    private AudioSource audio;
+    public AudioClip titleBGM;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -15,7 +19,17 @@ public class TitleScript : MonoBehaviour {
         {
             GameObject per = GameObject.Instantiate(persistent);
             per.name = "Persistent";
+            DontDestroyOnLoad(per);
+            per.transform.SetAsLastSibling();
         }
+        
+        audio = GetComponent<AudioSource>();
+        options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
+        audio.volume = options.musicVolume;
+        /*
+        audio.clip = titleBGM;
+        audio.playOnAwake=true;
+        */
 	}
 	
 	// Update is called once per frame

@@ -82,7 +82,6 @@ public class OptionsScript : MonoBehaviour {
         escPanel.SetActive(true);
 
         GameSettings.STATE = m_previousGameState;
-        CancelSettings();
     }
     // Update is called once per frame
     void Update () {
@@ -94,6 +93,7 @@ public class OptionsScript : MonoBehaviour {
             {
                 setState(OPTION_STATE.CLOSED);
 
+                CancelSettings();
             }
 
         }
@@ -117,23 +117,20 @@ public class OptionsScript : MonoBehaviour {
         //deselect button, otherwise last-hit button will appear to be highlighted until a new button is hit, 
         //seems like weird default behavior personally
         EventSystem.current.SetSelectedGameObject(null);
+        closeOption();
     }
 
     //close settings menu, revert settings to last accepted values
     public void CancelSettings()
     {
-        //Cursor.visible = false;
-        //Cursor.lockState = prevLockMode;
-
         mouse.value = mouseSensitivity;
         invertMouseMovement.isOn = mouseMovementInverted;
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
         sound.value = soundEffectVolume;
-        //settingsPanel.SetActive(false);
-        //escPanel.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
+        closeOption();
     }
 
     public void LoadTitle()
