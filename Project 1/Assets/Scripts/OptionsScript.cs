@@ -23,6 +23,7 @@ public class OptionsScript : MonoBehaviour {
     public bool mouseRotationInverted = false;
 
     private CursorLockMode prevLockMode; // store previous lockmode, unlock cursor when menu is open and resume lock when closed
+    private bool prevCursorVisible;
 
     private Canvas canvas;
 
@@ -61,7 +62,8 @@ public class OptionsScript : MonoBehaviour {
 
     void openOption()
     {
-        canvas.enabled = true;
+        //canvas.enabled = true;
+        prevCursorVisible = Cursor.visible;
         Cursor.visible = true;
         prevLockMode = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
@@ -71,18 +73,20 @@ public class OptionsScript : MonoBehaviour {
 
         m_previousGameState = GameSettings.STATE;
         GameSettings.STATE = GameSettings.GAME_STATE.FROZEN;
+
+        setState(OPTION_STATE.OPEN);
     }
     void closeOption()
     {
-        canvas.enabled = false;
-        Cursor.visible = false;
+        //canvas.enabled = false;
+        Cursor.visible = prevCursorVisible;
         Cursor.lockState = prevLockMode;
 
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
         GameSettings.STATE = m_previousGameState;
-        CancelSettings();
+        setState(OPTION_STATE.CLOSED);
     }
     // Update is called once per frame
     void Update () {
@@ -94,6 +98,7 @@ public class OptionsScript : MonoBehaviour {
             {
                 setState(OPTION_STATE.CLOSED);
 
+                CancelSettings();
             }
 
         }
@@ -117,23 +122,20 @@ public class OptionsScript : MonoBehaviour {
         //deselect button, otherwise last-hit button will appear to be highlighted until a new button is hit, 
         //seems like weird default behavior personally
         EventSystem.current.SetSelectedGameObject(null);
+        closeOption();
     }
 
     //close settings menu, revert settings to last accepted values
     public void CancelSettings()
     {
-        //Cursor.visible = false;
-        //Cursor.lockState = prevLockMode;
-
         mouse.value = mouseSensitivity;
         invertMouseMovement.isOn = mouseMovementInverted;
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
         sound.value = soundEffectVolume;
-        //settingsPanel.SetActive(false);
-        //escPanel.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
+        closeOption();
     }
 
     public void LoadTitle()

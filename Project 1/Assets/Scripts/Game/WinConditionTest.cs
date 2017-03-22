@@ -38,7 +38,8 @@ public class WinConditionTest : MonoBehaviour {
             {
                 if (collider[j].gameObject == obj)
                 {
-                    s += 1500;
+                    //s+=collider[j].gameObject.GetComponent<getItemInfo>
+                    //s += 1500;
                     isPresent = true;
                     break;
                 }
@@ -48,7 +49,10 @@ public class WinConditionTest : MonoBehaviour {
             if(itemInfo!= null)
             {
                 itemInfo.m_status = (isPresent)? NGame.ITEM_STATUS.REGISTERED: NGame.ITEM_STATUS.UNREGISTERED;
-                
+                if (isPresent)
+                {
+                    s += itemInfo.value;
+                }
             }
             if (!isPresent)
             {

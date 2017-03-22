@@ -8,6 +8,11 @@ public class TitleScript : MonoBehaviour {
     public GameObject persistent;
     public string levelName;
 
+    private OptionsScript options;
+    private GameUIScript game;
+    private AudioSource audio;
+    public AudioClip titleBGM;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -15,7 +20,14 @@ public class TitleScript : MonoBehaviour {
         {
             GameObject per = GameObject.Instantiate(persistent);
             per.name = "Persistent";
+            DontDestroyOnLoad(per);
+            per.transform.SetAsLastSibling();
         }
+        
+        audio = GetComponent<AudioSource>();
+        options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
+        game = GameObject.Find("GameUI").GetComponent<GameUIScript>();
+        audio.volume = options.musicVolume;
 	}
 	
 	// Update is called once per frame
@@ -25,6 +37,7 @@ public class TitleScript : MonoBehaviour {
 
     public void LoadFirstLevel()
     {
+        game.SetGoalAndTime(5000, 60);
         SceneManager.LoadScene(levelName);
     }
 }
