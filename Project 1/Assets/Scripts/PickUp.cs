@@ -99,6 +99,12 @@ public class PickUp : MonoBehaviour {
         pivotObjectHeld = obj;
         ((MonoBehaviour)handBase.GetComponent("Hand")).enabled = false;
         handBase.transform.parent = pivotObjectHeld.transform;
+
+        defaultRenderer.enabled = false;
+        gripRenderer.enabled = true;
+
+        defaultRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
+        gripRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
     }
 
     private void unHookFromPivot(GameObject obj)
@@ -107,6 +113,12 @@ public class PickUp : MonoBehaviour {
         pivotObjectHeld = null;
         ((MonoBehaviour)handBase.GetComponent("Hand")).enabled = true;
         handBase.transform.parent = null;
+
+        defaultRenderer.enabled = true;
+        gripRenderer.enabled = false;
+
+        defaultRenderer.material.color = new Color(0.5f, 0.5f, 0.5f, 0.05f);
+        gripRenderer.material.color = new Color(0.5f, 0.5f, 0.5f, 0.05f);
     }
 
     //revist this and actually listen for input once we decide upon a key to bind the action of droping an object too
