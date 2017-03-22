@@ -6,6 +6,20 @@ using UnityEngine.SceneManagement;
 
 public class Game : MonoBehaviour
 {
+    public static void OnWin(DEL_GAME_WIN del)
+    {
+
+    }
+
+    public delegate void DEL_GAME_WIN();
+    public List<DEL_GAME_WIN> m_onGameWon = new List<DEL_GAME_WIN>();
+
+
+    
+    public void handleGameWon()
+    {
+
+    }
     [SerializeField]
     OptionsScript m_optionScript;
     [SerializeField]
