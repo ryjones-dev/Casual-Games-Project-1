@@ -90,14 +90,21 @@ public class PickUp : MonoBehaviour {
     {
         float rotation = Input.GetAxis("Vertical") * rotationSpeed;
         rotation *= Time.deltaTime;
-        pivotObjectHeld.transform.Rotate(rotation, 0, 0);
+        Rigidbody body = pivotObjectHeld.GetComponent<Rigidbody>();
+        if (body == null)
+        {
+            Debug.Log("Body couldn't be found fail " + pivotObjectHeld.gameObject.name );
+            return;
+        }
+        body.AddForce(new Vector3(0,0, rotation) , ForceMode.Impulse);
+        //pivotObjectHeld.transform.Rotate(rotation, 0, 0);
     }
 
     private void hookToPivot(GameObject obj)
     {
         isHookedToPivot = true;
         pivotObjectHeld = obj;
-        ((MonoBehaviour)handBase.GetComponent("Hand")).enabled = false;
+        handBase.GetComponent<Hand>().setEnabled( false);
         handBase.transform.parent = pivotObjectHeld.transform;
 
         defaultRenderer.enabled = false;
@@ -111,7 +118,7 @@ public class PickUp : MonoBehaviour {
     {
         isHookedToPivot = false;
         pivotObjectHeld = null;
-        ((MonoBehaviour)handBase.GetComponent("Hand")).enabled = true;
+        handBase.GetComponent<Hand>().setEnabled( true);
         handBase.transform.parent = null;
 
         defaultRenderer.enabled = true;
