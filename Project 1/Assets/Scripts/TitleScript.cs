@@ -9,6 +9,7 @@ public class TitleScript : MonoBehaviour {
     public string levelName;
 
     private OptionsScript options;
+    private GameUIScript game;
     private AudioSource audio;
     public AudioClip titleBGM;
 
@@ -25,6 +26,7 @@ public class TitleScript : MonoBehaviour {
         
         audio = GetComponent<AudioSource>();
         options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
+        game = GameObject.Find("GameUI").GetComponent<GameUIScript>();
         audio.volume = options.musicVolume;
         /*
         audio.clip = titleBGM;
@@ -39,6 +41,7 @@ public class TitleScript : MonoBehaviour {
 
     public void LoadFirstLevel()
     {
+        game.SetGoalAndTime(5000, 1);
         SceneManager.LoadScene(levelName);
     }
 }

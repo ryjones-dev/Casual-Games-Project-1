@@ -23,6 +23,7 @@ public class OptionsScript : MonoBehaviour {
     public bool mouseRotationInverted = false;
 
     private CursorLockMode prevLockMode; // store previous lockmode, unlock cursor when menu is open and resume lock when closed
+    private bool prevCursorVisible;
 
     private Canvas canvas;
 
@@ -61,7 +62,8 @@ public class OptionsScript : MonoBehaviour {
 
     void openOption()
     {
-        canvas.enabled = true;
+        //canvas.enabled = true;
+        prevCursorVisible = Cursor.visible;
         Cursor.visible = true;
         prevLockMode = Cursor.lockState;
         Cursor.lockState = CursorLockMode.None;
@@ -71,17 +73,20 @@ public class OptionsScript : MonoBehaviour {
 
         m_previousGameState = GameSettings.STATE;
         GameSettings.STATE = GameSettings.GAME_STATE.FROZEN;
+
+        setState(OPTION_STATE.OPEN);
     }
     void closeOption()
     {
-        canvas.enabled = false;
-        Cursor.visible = false;
+        //canvas.enabled = false;
+        Cursor.visible = prevCursorVisible;
         Cursor.lockState = prevLockMode;
 
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
         GameSettings.STATE = m_previousGameState;
+        setState(OPTION_STATE.CLOSED);
     }
     // Update is called once per frame
     void Update () {

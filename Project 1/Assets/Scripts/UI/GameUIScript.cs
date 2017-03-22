@@ -43,7 +43,7 @@ public class GameUIScript : MonoBehaviour {
         progressCenterX = progressBar.transform.localPosition.x;
         quotaText.text = "/"+scoreQuota;
         UpdateScoreUI();
-
+        UpdateTimerUI();
     }
 
     // Update is called once per frame
@@ -62,6 +62,11 @@ public class GameUIScript : MonoBehaviour {
             {
                 timeRemaining -= Time.deltaTime;
                 if (timeRemaining < 0) { timeRemaining = 0; }
+                if((int)timeRemaining != secondsPrevious)
+                {
+                    audio.PlayOneShot(timerTick, options.soundEffectVolume / 5);
+                    secondsPrevious = (int)timeRemaining;
+                }
                 UpdateTimerUI();
             }
 
@@ -78,11 +83,6 @@ public class GameUIScript : MonoBehaviour {
     {
         timerMinutes = (int)timeRemaining / 60;
         timerSeconds = (int)timeRemaining % 60;
-        if(timerSeconds != secondsPrevious)
-        {
-            audio.PlayOneShot(timerTick,options.soundEffectVolume/5);
-            secondsPrevious = timerSeconds;
-        }
         string secondstring = "" + timerSeconds;
         if (timerSeconds < 10) { secondstring = "0" + secondstring; }
         timer.text = timerMinutes + ":" + secondstring;
@@ -125,5 +125,14 @@ public class GameUIScript : MonoBehaviour {
         
         //score is once again up to date
         scoreLast = score;
+    }
+
+    public void SetGoalAndTime(int scoreGoal, float seconds)
+    {
+        timeRemaining = seconds;
+        score = 0;
+        scoreQuota = scoreGoal;
+        UpdateScoreUI();
+        UpdateTimerUI();
     }
 }
