@@ -14,7 +14,7 @@ public class GameUIScript : MonoBehaviour {
     private Game game;
     private GameObject gameObject;
     private bool gameSet = false;
-    private bool newLevel=false;
+    private int newLevel=0;
 
     public GameObject victoryPanel;
     public Text finalScoreText;
@@ -71,54 +71,60 @@ public class GameUIScript : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-        if (newLevel)
+        if (newLevel <= 0)
         {
-            newLevel = false;
-            gameSet = false;
-        }
-        if(gameObject == null)
-        {
-            gameObject = GameObject.Find("Game");
-            
-        }
-        else if (game == null)
-        {
-            game = gameObject.GetComponent<Game>();
-        }
-        else if(gameSet == false)
-        {
-            game.addGameWonHandler(LevelEnd);
-            gameSet = true;
-        }
+            if (gameObject == null)
+            {
+                gameObject = GameObject.Find("Game");
 
-        if (SceneManager.GetActiveScene().buildIndex == 0) //no ui on title screen
-        {
-            canvas.enabled = false;
-            return;
+            }
+            else if (game == null)
+            {
+                game = gameObject.GetComponent<Game>();
+            }
+            else if (gameSet == false)
+            {
+                game.addGameWonHandler(LevelEnd);
+                gameSet = true;
+            }
+
+            if (SceneManager.GetActiveScene().buildIndex == 0) //no ui on title screen
+            {
+                canvas.enabled = false;
+                return;
+            }
+            else
+            {
+                canvas.enabled = true;
+            }
+            if (GameSettings.STATE == GameSettings.GAME_STATE.PLAYING && !levelIsOver)
+            {
+                if (timeRemaining > 0)
+                {
+                    lastSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                    timeRemaining -= Time.deltaTime;
+                    if (timeRemaining < 0) { timeRemaining = 0; }
+                    if ((int)timeRemaining != secondsPrevious)
+                    {
+                        audio.PlayOneShot(timerTick, options.soundEffectVolume / 5);
+                        secondsPrevious = (int)timeRemaining;
+                    }
+                    UpdateTimerUI();
+                }
+
+                //if score has changed, modify score UI
+                if (score != scoreLast)
+                {
+                    UpdateScoreUI();
+                }
+            }
         }
         else
         {
-            canvas.enabled = true;
-        }
-        if(GameSettings.STATE == GameSettings.GAME_STATE.PLAYING && !levelIsOver){
-            if (timeRemaining > 0)
-            {
-                lastSceneIndex = SceneManager.GetActiveScene().buildIndex;
-                timeRemaining -= Time.deltaTime;
-                if (timeRemaining < 0) { timeRemaining = 0; }
-                if((int)timeRemaining != secondsPrevious)
-                {
-                    audio.PlayOneShot(timerTick, options.soundEffectVolume / 5);
-                    secondsPrevious = (int)timeRemaining;
-                }
-                UpdateTimerUI();
-            }
-
-            //if score has changed, modify score UI
-            if (score != scoreLast)
-            {
-                UpdateScoreUI();
-            }
+            newLevel -= 1;
+            levelIsOver = false;
+            gameSet = false;
+            victoryPanel.SetActive(false);
         }
         /* //instant win debug command
         if (Input.GetKeyDown("p"))
@@ -163,8 +169,8 @@ public class GameUIScript : MonoBehaviour {
         }
         progressBar.transform.localScale = newScale;
         progressBar.transform.localPosition = newPos;
-        
-       
+
+        quotaText.text = "/"+scoreQuota.ToString();
 
         scoreText.text = "" + score;
         while(scoreText.text.Length < quotaText.text.Length - 1)
@@ -202,10 +208,9 @@ public class GameUIScript : MonoBehaviour {
     {
         
         SceneManager.LoadScene(lastSceneIndex + 1);
-        SetGoalAndTime(5000, 60);
+        SetGoalAndTime(5000*(lastSceneIndex+1), 60);
         // levelIsOver = false;
-        newLevel = true;
+        newLevel = 5;
         victoryPanel.SetActive(false);
-        gameSet = false;
     }
 }
