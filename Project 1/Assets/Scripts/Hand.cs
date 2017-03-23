@@ -34,10 +34,18 @@ public class Hand : MonoBehaviour
         //optionsScript = optionsMenu.GetComponent<OptionsScript>();
     }
 
-    public void kUpdate(float speedHor, float speedVer, float speedRot, bool isInverted)
+    /* public void Update(float speedHor, float speedVer, float speedRot, bool isInverted)
+     {
+         updateMovement(speedHor,  speedVer,  speedRot,  isInverted);
+     }*/
+
+    public void Update()
     {
-        updateMovement(speedHor,  speedVer,  speedRot,  isInverted);
+        if (GameSettings.STATE == GameSettings.GAME_STATE.PAUSED || GameSettings.STATE == GameSettings.GAME_STATE.FROZEN) return;
+
+        updateMovement(5, 5, 5, false);
     }
+
     void updateMovement(float speedHor, float speedVer, float speedRot, bool isInverted)
     {
         

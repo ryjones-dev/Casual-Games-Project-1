@@ -14,11 +14,11 @@ public class Tutorial : MonoBehaviour
     public float alphaMax;
     public float blinkTimer;
 
-    private GameObject controls;
+    private Image blinkPanel;
 
     private void Start()
     {
-        controls = transform.FindChild("Canvas").FindChild("Controls").gameObject;
+        blinkPanel = transform.FindChild("Canvas").FindChild("Controls").FindChild("Blink Panel").GetComponent<Image>();
 
         StartCoroutine(BeginTutorial());
     }
@@ -115,18 +115,21 @@ public class Tutorial : MonoBehaviour
     private IEnumerator BlinkControls()
     {
         float timer = 0;
+        int multiplier = 1;
 
         while(MessageBox.IsActive)
         {
-            if(timer >= blinkTimer)
-            {
-                timer = 0;
-                controls.SetActive(!controls.activeSelf);
-            }
+            timer += Time.deltaTime * multiplier;
+            blinkPanel.color = new Color(blinkPanel.color.r, blinkPanel.color.g, blinkPanel.color.b, timer / blinkTimer);
 
-            timer += Time.deltaTime;
+            if (timer >= blinkTimer || timer <= 0)
+            {
+                multiplier *= -1;
+            }
 
             yield return 0;
         }
+
+        blinkPanel.color = new Color(blinkPanel.color.r, blinkPanel.color.g, blinkPanel.color.b, 0);
     }
 }

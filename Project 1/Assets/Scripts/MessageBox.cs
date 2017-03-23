@@ -211,8 +211,8 @@ public class MessageBox : MonoBehaviour
             while(GameSettings.STATE == GameSettings.GAME_STATE.FROZEN)
             {
                 yield return null;
-
             }
+
 			// Adds a word and a space to the message box text simply to see if the word will fit in the box.
             message.text += word + " ";
 
