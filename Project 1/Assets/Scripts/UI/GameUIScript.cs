@@ -11,6 +11,13 @@ public class GameUIScript : MonoBehaviour {
 
     private Canvas canvas;
     private OptionsScript options;
+    private Game game;
+    private GameObject gameObject;
+    private bool gameSet = false;
+    private bool newLevel=false;
+
+    public GameObject victoryPanel;
+    public Text finalScoreText;
 
     public Text timer;
     public float timeInitial = 70;
@@ -33,8 +40,11 @@ public class GameUIScript : MonoBehaviour {
 
     public int lastSceneIndex;
 
+    private bool levelIsOver;
+
     private AudioSource audio;
     public AudioClip timerTick;
+
 	// Use this for initialization
 	void Start () {
         if(instance == null)
@@ -47,6 +57,7 @@ public class GameUIScript : MonoBehaviour {
         options = OptionsScript.instance;
         //options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
         timeRemaining = timeInitial;
+        levelIsOver = false;
 
         //set up score UI to initial values
         progressFullScale = progressBar.transform.localScale.x;
@@ -54,10 +65,32 @@ public class GameUIScript : MonoBehaviour {
         quotaText.text = "/"+scoreQuota;
         UpdateScoreUI();
         UpdateTimerUI();
+
+        //AddEventHandler(LevelEnd);
     }
 
     // Update is called once per frame
     void Update() {
+        if (newLevel)
+        {
+            newLevel = false;
+            gameSet = false;
+        }
+        if(gameObject == null)
+        {
+            gameObject = GameObject.Find("Game");
+            
+        }
+        else if (game == null)
+        {
+            game = gameObject.GetComponent<Game>();
+        }
+        else if(gameSet == false)
+        {
+            game.addGameWonHandler(LevelEnd);
+            gameSet = true;
+        }
+
         if (SceneManager.GetActiveScene().buildIndex == 0) //no ui on title screen
         {
             canvas.enabled = false;
@@ -67,7 +100,7 @@ public class GameUIScript : MonoBehaviour {
         {
             canvas.enabled = true;
         }
-        if(GameSettings.STATE == GameSettings.GAME_STATE.PLAYING){
+        if(GameSettings.STATE == GameSettings.GAME_STATE.PLAYING && !levelIsOver){
             if (timeRemaining > 0)
             {
                 lastSceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -87,6 +120,11 @@ public class GameUIScript : MonoBehaviour {
                 UpdateScoreUI();
             }
         }
+        /* //instant win debug command
+        if (Input.GetKeyDown("p"))
+        {
+            LevelEnd();
+        }*/
     }
 
     //updates timer UI to show time remaining in the user-friendly minute:second format
@@ -145,5 +183,29 @@ public class GameUIScript : MonoBehaviour {
         scoreQuota = scoreGoal;
         UpdateScoreUI();
         UpdateTimerUI();
+    }
+
+    public void LevelEnd()
+    {
+        if (levelIsOver == false)
+        {
+            levelIsOver = true;
+            victoryPanel.SetActive(true);
+            score += timerSeconds * 10;
+            finalScoreText.text = "" + score;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+    }
+
+    public void LoadNextLevel()
+    {
+        
+        SceneManager.LoadScene(lastSceneIndex + 1);
+        SetGoalAndTime(5000, 60);
+        // levelIsOver = false;
+        newLevel = true;
+        victoryPanel.SetActive(false);
+        gameSet = false;
     }
 }
