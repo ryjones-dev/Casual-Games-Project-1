@@ -41,6 +41,8 @@ public class Hand : MonoBehaviour
 
     public void Update()
     {
+        if (GameSettings.STATE == GameSettings.GAME_STATE.PAUSED || GameSettings.STATE == GameSettings.GAME_STATE.FROZEN) return;
+
         updateMovement(5, 5, 5, false);
     }
 

@@ -41,6 +41,8 @@ public class PickUp : MonoBehaviour {
     // Update is called once per frame
     public void Update()
     {
+        if (GameSettings.STATE == GameSettings.GAME_STATE.PAUSED || GameSettings.STATE == GameSettings.GAME_STATE.FROZEN) return;
+
         if (isHookedToPivot)
         {
             pivotOnMovement();
@@ -113,7 +115,7 @@ public class PickUp : MonoBehaviour {
     {
         isHookedToPivot = true;
         pivotObjectHeld = obj;
-        handBase.GetComponent<Hand>().setEnabled( false);
+        handBase.GetComponent<Hand>().enabled = false;
         handBase.transform.parent = pivotObjectHeld.transform;
 
         defaultRenderer.enabled = false;
@@ -127,7 +129,7 @@ public class PickUp : MonoBehaviour {
     {
         isHookedToPivot = false;
         pivotObjectHeld = null;
-        handBase.GetComponent<Hand>().setEnabled( true);
+        handBase.GetComponent<Hand>().enabled = true;
         handBase.transform.parent = null;
 
         defaultRenderer.enabled = true;
@@ -153,6 +155,7 @@ public class PickUp : MonoBehaviour {
         obj.transform.parent = hand.transform;
         objectInHand = true;
         heldObject = obj.gameObject;
+        Physics.IgnoreCollision(handBase.GetComponent<Collider>(), obj.GetComponent<Collider>());
 
         GameObject.Destroy(obj.GetComponent<Rigidbody>());
 
@@ -170,8 +173,8 @@ public class PickUp : MonoBehaviour {
         toDrop.AddComponent<Rigidbody>();
         objectInHand = false;
         heldObject = null;
+        Physics.IgnoreCollision(handBase.GetComponent<Collider>(), toDrop.GetComponent<Collider>(), false);
 
-        Debug.Log("Enabling default renderer and disabling grip renderer");
         defaultRenderer.enabled = true;
         gripRenderer.enabled = false;
 
