@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 
 public class GameUIScript : MonoBehaviour {
 
+    public static GameUIScript instance;
+
     private Canvas canvas;
     private OptionsScript options;
 
@@ -33,9 +35,15 @@ public class GameUIScript : MonoBehaviour {
     public AudioClip timerTick;
 	// Use this for initialization
 	void Start () {
+        if(instance == null)
+        {
+            instance = this;
+        }
+
         canvas = GetComponent<Canvas>();
         audio = GetComponent<AudioSource>();
-        options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
+        options = OptionsScript.instance;
+        //options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
         timeRemaining = timeInitial;
 
         //set up score UI to initial values
