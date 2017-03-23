@@ -6,7 +6,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class OptionsScript : MonoBehaviour {
-    
+
+    public static OptionsScript instance;
+
     public GameObject settingsPanel; //panel to show when menu is open
     public GameObject escPanel;      //panel to show when menu is closed
 
@@ -33,7 +35,11 @@ public class OptionsScript : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        
+        if(instance == null)
+        {
+            instance = this;
+        }
+
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
