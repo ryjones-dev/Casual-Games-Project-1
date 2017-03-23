@@ -8,6 +8,9 @@ public class ColliderDetector : MonoBehaviour {
     int m_checkCycle = 0;
     List<DEL_COLLIDER> m_evntCollideds = new List<DEL_COLLIDER>();
     List<Collider> m_colliders = new List<Collider>();
+
+    public int ItemCount { get { return m_evntCollideds.Count; } }
+
     // Use this for initialization
     void Start () {
         var collider = GetComponent<Collider>();
