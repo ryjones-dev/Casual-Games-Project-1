@@ -39,7 +39,7 @@ public class Hand : MonoBehaviour
          updateMovement(speedHor,  speedVer,  speedRot,  isInverted);
      }*/
 
-    public void kUpdate(float speedHor, float speedVer, float speedRot, bool isInverted, bool isActive)
+    public void kUpdate(float speed, bool isInverted, bool isActive)
     {
         if (!isActive)
         {
@@ -48,7 +48,7 @@ public class Hand : MonoBehaviour
 
         if (GameSettings.STATE == GameSettings.GAME_STATE.PAUSED || GameSettings.STATE == GameSettings.GAME_STATE.FROZEN) return;
 
-        updateMovement(speedHor, speedVer, speedRot, isInverted);
+        updateMovement(speed, isInverted);
 
 
     }
