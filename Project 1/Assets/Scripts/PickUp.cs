@@ -17,7 +17,7 @@ public class PickUp : MonoBehaviour {
     private bool isHookedToPivot = false;
     private float rotationSpeed = 100.0f;
     private GameObject pivotObjectHeld;
-
+    private bool handScriptEnabled = true;
 
     public AudioClip pickupSound;
     public AudioClip dropSound;
@@ -39,7 +39,7 @@ public class PickUp : MonoBehaviour {
     }
 
     // Update is called once per frame
-    public void Update()
+    public void kUpdate()
     {
         if (GameSettings.STATE == GameSettings.GAME_STATE.PAUSED || GameSettings.STATE == GameSettings.GAME_STATE.FROZEN) return;
 
@@ -74,6 +74,11 @@ public class PickUp : MonoBehaviour {
                 onCooldown = false;
             }
         }
+    }
+
+    public bool isHandEnabled()
+    {
+        return handScriptEnabled;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -115,7 +120,7 @@ public class PickUp : MonoBehaviour {
     {
         isHookedToPivot = true;
         pivotObjectHeld = obj;
-        handBase.GetComponent<Hand>().enabled = false;
+        handScriptEnabled = false;
         handBase.transform.parent = pivotObjectHeld.transform;
 
         defaultRenderer.enabled = false;
@@ -129,7 +134,7 @@ public class PickUp : MonoBehaviour {
     {
         isHookedToPivot = false;
         pivotObjectHeld = null;
-        handBase.GetComponent<Hand>().enabled = true;
+        handScriptEnabled = true;
         handBase.transform.parent = null;
 
         defaultRenderer.enabled = true;
