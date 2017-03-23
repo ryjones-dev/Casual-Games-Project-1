@@ -13,6 +13,7 @@ public class GameOverScript : MonoBehaviour {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
+
         game = GameObject.Find("GameUI").GetComponent<GameUIScript>();
     }
 	
@@ -24,7 +25,7 @@ public class GameOverScript : MonoBehaviour {
     public void LoadFirstLevel()
     {
         game.SetGoalAndTime(5000, 60);
-        SceneManager.LoadScene("tutorial");
+        SceneManager.LoadScene(GameUIScript.instance.lastSceneIndex);
     }
 
     public void LoadTitleScreen()

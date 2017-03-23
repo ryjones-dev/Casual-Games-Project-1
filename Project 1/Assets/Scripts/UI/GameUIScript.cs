@@ -31,6 +31,8 @@ public class GameUIScript : MonoBehaviour {
     private int secondsPrevious=0;
     private float timeRemaining;
 
+    public int lastSceneIndex;
+
     private AudioSource audio;
     public AudioClip timerTick;
 	// Use this for initialization
@@ -68,6 +70,7 @@ public class GameUIScript : MonoBehaviour {
         if(GameSettings.STATE == GameSettings.GAME_STATE.PLAYING){
             if (timeRemaining > 0)
             {
+                lastSceneIndex = SceneManager.GetActiveScene().buildIndex;
                 timeRemaining -= Time.deltaTime;
                 if (timeRemaining < 0) { timeRemaining = 0; }
                 if((int)timeRemaining != secondsPrevious)
