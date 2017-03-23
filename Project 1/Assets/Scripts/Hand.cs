@@ -39,11 +39,18 @@ public class Hand : MonoBehaviour
          updateMovement(speedHor,  speedVer,  speedRot,  isInverted);
      }*/
 
-    public void Update()
+    public void kUpdate(float speedHor, float speedVer, float speedRot, bool isInverted, bool isActive)
     {
+        if (!isActive)
+        {
+            return;
+        }
+
         if (GameSettings.STATE == GameSettings.GAME_STATE.PAUSED || GameSettings.STATE == GameSettings.GAME_STATE.FROZEN) return;
 
-        updateMovement(GameSettings.MOUSE_SENSITIVITY, GameSettings.IS_MOUSE_INPUT_INVERTED);
+        updateMovement(speedHor, speedVer, speedRot, isInverted);
+
+
     }
 
     void updateMovement(float speed, bool isInverted)
