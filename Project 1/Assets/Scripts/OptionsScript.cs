@@ -12,7 +12,6 @@ public class OptionsScript : MonoBehaviour {
 
     //sliders and toggleboxes, and variables to store their last-held data
     public Slider mouse;
-    public float mouseSensitivity=1.0f;
     public Slider music;
     public float musicVolume = 1.0f;
     public Slider sound;
@@ -43,7 +42,7 @@ public class OptionsScript : MonoBehaviour {
         //music.enabled = false;
         //sound.enabled = false;
 
-        mouse.value = mouseSensitivity;
+        mouse.value = GameSettings.MOUSE_SENSITIVITY;
         invertMouseMovement.isOn = mouseMovementInverted;
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
@@ -111,7 +110,7 @@ public class OptionsScript : MonoBehaviour {
         //Cursor.visible = false;
         //Cursor.lockState = prevLockMode;
 
-        mouseSensitivity = mouse.value;
+        GameSettings.MOUSE_SENSITIVITY = mouse.value;
         mouseMovementInverted = invertMouseMovement.isOn;
         mouseRotationInverted = invertMouseRotation.isOn;
         musicVolume = music.value;
@@ -128,7 +127,7 @@ public class OptionsScript : MonoBehaviour {
     //close settings menu, revert settings to last accepted values
     public void CancelSettings()
     {
-        mouse.value = mouseSensitivity;
+        mouse.value = GameSettings.MOUSE_SENSITIVITY;
         invertMouseMovement.isOn = mouseMovementInverted;
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
