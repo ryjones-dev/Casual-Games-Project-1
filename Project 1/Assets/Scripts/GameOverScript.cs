@@ -24,7 +24,7 @@ public class GameOverScript : MonoBehaviour {
 
     public void LoadFirstLevel()
     {
-        game.SetGoalAndTime(5000 * (game.lastSceneIndex + 1), 60);
+        game.SetGoalAndTime(2500 * (game.lastSceneIndex + 1), 60);
         SceneManager.LoadScene(GameUIScript.instance.lastSceneIndex);
     }
 

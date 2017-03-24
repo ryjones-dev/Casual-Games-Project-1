@@ -67,7 +67,7 @@ public class Tutorial : MonoBehaviour
         StartCoroutine(FadeInBackground());
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        MessageBox.ShowMessageBox("One down! Pack up the rest of the items as quickly as possible!");
+        MessageBox.ShowMessageBox("One down! Pack up the rest of the items as quickly as possible! Make sure you close the suitcase when you are done packing!");
         yield return MessageBox.WaitForSubmit();
 
         MessageBox.HideMessageBox();
