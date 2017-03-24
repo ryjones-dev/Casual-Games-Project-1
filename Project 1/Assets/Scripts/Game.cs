@@ -59,7 +59,7 @@ public class Game : MonoBehaviour
 
           m_pickUp.kUpdate();
           hand.kUpdate(GameSettings.MOUSE_SENSITIVITY, GameSettings.IS_MOUSE_INPUT_INVERTED, m_pickUp.isHandEnabled());
-        Debug.Log(m_gameCheckState);
+        //Debug.Log(m_gameCheckState);
         switch (m_gameCheckState)
         {
             case GAME_WON_CHECKING_STATE.PANDING:
@@ -85,7 +85,8 @@ public class Game : MonoBehaviour
     void checkGameWon()
     {
         bool isScoreGoodEnough = GameUIScript.instance.score >= GameUIScript.instance.scoreQuota;
-        bool isSuitCaseClosed = m_suitCaseUpperPart.localRotation.x < 50.0 && m_suitCaseUpperPart.localRotation.x > -50.0f;
+        bool isSuitCaseClosed = m_suitCaseUpperPart.localRotation.eulerAngles.x < 50.0 && m_suitCaseUpperPart.localRotation.eulerAngles.x > -50.0f;
+        Debug.Log(isScoreGoodEnough + ", " + isSuitCaseClosed);
         if (isScoreGoodEnough && isSuitCaseClosed)
         {
             m_gameCheckState = GAME_WON_CHECKING_STATE.REGISTERED;

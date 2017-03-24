@@ -208,7 +208,7 @@ public class GameUIScript : MonoBehaviour {
     {
         
         SceneManager.LoadScene(lastSceneIndex + 1);
-        SetGoalAndTime(5000*(lastSceneIndex+1), 60);
+        SetGoalAndTime(5000 + 100*(lastSceneIndex+1), 60);
         // levelIsOver = false;
         newLevel = 5;
         victoryPanel.SetActive(false);
