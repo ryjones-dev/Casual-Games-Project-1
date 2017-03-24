@@ -217,15 +217,15 @@ public class GameUIScript : MonoBehaviour {
 
     void OnEnable()
     {
-        SceneManager.sceneLoaded += OnLevelLoad;
+        SceneManager.sceneLoaded += OnLevelLoaded;
     }
 
     void OnDisable()
     {
-        SceneManager.sceneLoaded -= OnLevelLoad;
+        SceneManager.sceneLoaded -= OnLevelLoaded;
     }
 
-    void OnLevelLoad(Scene scene, LoadSceneMode mode)
+    void OnLevelLoaded(Scene scene, LoadSceneMode mode)
     {
         gameSet = false;
     }
