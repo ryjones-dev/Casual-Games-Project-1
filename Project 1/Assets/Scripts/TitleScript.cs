@@ -11,7 +11,6 @@ public class TitleScript : MonoBehaviour {
     private OptionsScript options;
     private GameUIScript game;
     private AudioSource audio;
-    public AudioClip titleBGM;
 
 	// Use this for initialization
 	void Start () {
@@ -25,15 +24,25 @@ public class TitleScript : MonoBehaviour {
         }
         
         audio = GetComponent<AudioSource>();
-        options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
-        game = GameObject.Find("GameUI").GetComponent<GameUIScript>();
-        audio.volume = options.musicVolume;
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		
-	}
+		if(options == null)
+        {
+            options = OptionsScript.instance;
+        }
+        else
+        {
+            audio.volume = options.musicVolume;
+        }
+        if (game == null)
+        {
+            game = GameUIScript.instance;
+        }
+
+
+    }
 
     public void LoadFirstLevel()
     {
