@@ -12,7 +12,7 @@ public class GameUIScript : MonoBehaviour {
     private Canvas canvas;
     private OptionsScript options;
     private Game game;
-    private GameObject gameObject;
+    private GameObject gameObj;
     private bool gameSet = false;
     private int newLevel=0;
 
@@ -73,17 +73,18 @@ public class GameUIScript : MonoBehaviour {
     void Update() {
         if (newLevel <= 0)
         {
-            if (gameObject == null)
+            if (gameObj == null)
             {
-                gameObject = GameObject.Find("Game");
+                gameObj = GameObject.Find("Game");
 
             }
             else if (game == null)
             {
-                game = gameObject.GetComponent<Game>();
+                game = gameObj.GetComponent<Game>();
             }
             else if (gameSet == false)
             {
+                Debug.Log("Set game won handler");
                 game.addGameWonHandler(LevelEnd);
                 gameSet = true;
             }
@@ -212,5 +213,20 @@ public class GameUIScript : MonoBehaviour {
         // levelIsOver = false;
         newLevel = 5;
         victoryPanel.SetActive(false);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnLevelLoad;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnLevelLoad;
+    }
+
+    void OnLevelLoad(Scene scene, LoadSceneMode mode)
+    {
+        gameSet = false;
     }
 }
