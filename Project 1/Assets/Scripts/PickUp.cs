@@ -104,7 +104,7 @@ public class PickUp : MonoBehaviour {
 
     private void pivotOnMovement()
     {
-        float rotation = Input.GetAxis("Vertical") * rotationSpeed;
+        float rotation = Input.GetAxis("Mouse Y") * rotationSpeed;
         rotation *= Time.deltaTime;
         Rigidbody body = pivotObjectHeld.GetComponent<Rigidbody>();
         if (body == null)

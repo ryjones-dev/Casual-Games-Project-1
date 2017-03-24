@@ -28,7 +28,7 @@ public class Game : MonoBehaviour
     }
     void raiseGameWon()
     {
-        Debug.Log("raiseGameWon");
+        //Debug.Log("raiseGameWon");
         for (int i = m_onGameWon.Count - 1; i >= 0; i--)
         {
             m_onGameWon[i]();
@@ -36,7 +36,7 @@ public class Game : MonoBehaviour
     }
     void raiseGameWonDelayed()
     {
-        Debug.Log("raiseGameWonDelayed");
+        //Debug.Log("raiseGameWonDelayed");
         for (int i = m_onGameWonDelayed.Count - 1; i >= 0; i--)
         {
             m_onGameWonDelayed[i]();
@@ -86,7 +86,7 @@ public class Game : MonoBehaviour
     {
         bool isScoreGoodEnough = GameUIScript.instance.score >= GameUIScript.instance.scoreQuota;
         bool isSuitCaseClosed = m_suitCaseUpperPart.localRotation.eulerAngles.x < 50.0 && m_suitCaseUpperPart.localRotation.eulerAngles.x > -50.0f;
-        Debug.Log(isScoreGoodEnough + ", " + isSuitCaseClosed);
+        //Debug.Log(isScoreGoodEnough + ", " + isSuitCaseClosed);
         if (isScoreGoodEnough && isSuitCaseClosed)
         {
             m_gameCheckState = GAME_WON_CHECKING_STATE.REGISTERED;
