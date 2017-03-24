@@ -6,15 +6,14 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 public class OptionsScript : MonoBehaviour {
-    
+
+    public static OptionsScript instance;
+
     public GameObject settingsPanel; //panel to show when menu is open
     public GameObject escPanel;      //panel to show when menu is closed
 
-    public bool gamePaused = false;
-
     //sliders and toggleboxes, and variables to store their last-held data
     public Slider mouse;
-    public float mouseSensitivity=1.0f;
     public Slider music;
     public float musicVolume = 1.0f;
     public Slider sound;
@@ -25,12 +24,22 @@ public class OptionsScript : MonoBehaviour {
     public bool mouseRotationInverted = false;
 
     private CursorLockMode prevLockMode; // store previous lockmode, unlock cursor when menu is open and resume lock when closed
+    private bool prevCursorVisible;
 
     private Canvas canvas;
 
+    public enum OPTION_STATE {CLOSED,OPEN};
+    GameSettings.GAME_STATE m_previousGameState;
+    OPTION_STATE m_state = OPTION_STATE.CLOSED;
+
+
     // Use this for initialization
     void Start () {
-        
+        if(instance == null)
+        {
+            instance = this;
+        }
+
         settingsPanel.SetActive(false);
         escPanel.SetActive(true);
 
@@ -39,7 +48,7 @@ public class OptionsScript : MonoBehaviour {
         //music.enabled = false;
         //sound.enabled = false;
 
-        mouse.value = mouseSensitivity;
+        mouse.value = GameSettings.MOUSE_SENSITIVITY;
         invertMouseMovement.isOn = mouseMovementInverted;
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
@@ -47,81 +56,99 @@ public class OptionsScript : MonoBehaviour {
 
         canvas = gameObject.GetComponent<Canvas>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-        if (canvas.enabled) //do nothing if options menu is not "active"
-        {
-            if (Input.GetKeyDown("escape")) //esc opens and closes options menu
-            {
-                if(gamePaused) //close menu if it is open
-                //if (settingsPanel.activeSelf) 
-                {
-                    CancelSettings();
-                }
-                else //open menu if it is closed
-                {
-                    Cursor.visible = true;
-                    prevLockMode = Cursor.lockState;
-                    Cursor.lockState = CursorLockMode.None;
+    void setState(OPTION_STATE state)
+    {
+        if(m_state == state) return;
+        m_state = state;
+        if (m_state == OPTION_STATE.OPEN)
+            openOption();
+        else closeOption();
+    }
 
-                    settingsPanel.SetActive(true);
-                    escPanel.SetActive(false);
-                    gamePaused = true;
-                }
-            }
-        }
-        else if(gamePaused)
-        //else if (settingsPanel.activeSelf) //if options menu was deactivated, cancel settings
+    void openOption()
+    {
+        //canvas.enabled = true;
+        prevCursorVisible = Cursor.visible;
+        Cursor.visible = true;
+        prevLockMode = Cursor.lockState;
+        Cursor.lockState = CursorLockMode.None;
+
+        settingsPanel.SetActive(true);
+        escPanel.SetActive(false);
+
+        m_previousGameState = GameSettings.STATE;
+        GameSettings.STATE = GameSettings.GAME_STATE.FROZEN;
+
+        setState(OPTION_STATE.OPEN);
+    }
+    void closeOption()
+    {
+        //canvas.enabled = false;
+        Cursor.visible = prevCursorVisible;
+        Cursor.lockState = prevLockMode;
+
+        settingsPanel.SetActive(false);
+        escPanel.SetActive(true);
+
+        GameSettings.STATE = m_previousGameState;
+        setState(OPTION_STATE.CLOSED);
+    }
+    // Update is called once per frame
+    void Update () {
+        if (Input.GetKeyDown("escape")) //esc opens and closes options menu
         {
-            CancelSettings();
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
-            gamePaused = false;
+            if (m_state == OPTION_STATE.CLOSED)
+                setState(OPTION_STATE.OPEN);
+            else
+            {
+                setState(OPTION_STATE.CLOSED);
+
+                CancelSettings();
+            }
+
         }
+        
     }
 
     //apply new settings and close menu
     public void ChangeSettings()
     {
-        Cursor.visible = false;
-        Cursor.lockState = prevLockMode;
+        //Cursor.visible = false;
+        //Cursor.lockState = prevLockMode;
 
-        mouseSensitivity = mouse.value;
+        GameSettings.MOUSE_SENSITIVITY = mouse.value;
         mouseMovementInverted = invertMouseMovement.isOn;
         mouseRotationInverted = invertMouseRotation.isOn;
         musicVolume = music.value;
         soundEffectVolume = sound.value;
-        settingsPanel.SetActive(false);
-        escPanel.SetActive(true);
+        //settingsPanel.SetActive(false);
+        //escPanel.SetActive(true);
 
         //deselect button, otherwise last-hit button will appear to be highlighted until a new button is hit, 
         //seems like weird default behavior personally
         EventSystem.current.SetSelectedGameObject(null);
-        gamePaused = false;
+        closeOption();
     }
 
     //close settings menu, revert settings to last accepted values
     public void CancelSettings()
     {
-        Cursor.visible = false;
-        Cursor.lockState = prevLockMode;
-
-        mouse.value = mouseSensitivity;
+        mouse.value = GameSettings.MOUSE_SENSITIVITY;
         invertMouseMovement.isOn = mouseMovementInverted;
         invertMouseRotation.isOn = mouseRotationInverted;
         music.value = musicVolume;
         sound.value = soundEffectVolume;
-        settingsPanel.SetActive(false);
-        escPanel.SetActive(true);
 
         EventSystem.current.SetSelectedGameObject(null);
-        gamePaused = false;
+        closeOption();
     }
 
     public void LoadTitle()
     {
         SceneManager.LoadScene("Title");
+        CancelSettings();
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
     }
 
     public void QuitGame()
