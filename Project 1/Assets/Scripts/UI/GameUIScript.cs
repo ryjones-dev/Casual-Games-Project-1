@@ -213,4 +213,19 @@ public class GameUIScript : MonoBehaviour {
         newLevel = 5;
         victoryPanel.SetActive(false);
     }
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnLevelLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnLevelLoaded;
+    }
+
+    void OnLevelLoaded(Scene scene, LoadSceneMode mode)
+    {
+        gameSet = false;
+    }
 }

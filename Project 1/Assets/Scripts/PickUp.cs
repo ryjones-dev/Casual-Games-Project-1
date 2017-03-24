@@ -9,8 +9,8 @@ public class PickUp : MonoBehaviour {
     public GameObject handBase;
     private bool objectInHand = false;
     private GameObject heldObject;
-    private const int PICK_UP_COOLDOWN = 20;
-    private int currentCooldDown = 0;
+    private const int PICK_UP_COOLDOWN = 1;
+    private float currentCooldDown = 0;
     private bool onCooldown = false;
     private Renderer defaultRenderer;
     private Renderer gripRenderer;
@@ -67,7 +67,7 @@ public class PickUp : MonoBehaviour {
         }
         else
         {
-            currentCooldDown++;
+            currentCooldDown += Time.deltaTime;
             if(currentCooldDown > PICK_UP_COOLDOWN)
             {
                 currentCooldDown = 0;
