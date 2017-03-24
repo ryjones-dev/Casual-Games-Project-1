@@ -66,17 +66,20 @@ public class MessageBox : MonoBehaviour
         get { return Instance.messageBox.activeSelf; }
     }
 
+    private void Awake()
+    {
+        // If there is no other existing instance, set the Instance variable to this instance.
+        // This is important because we can access the MessageBox public properties and methods
+        // without having a reference to the MessageBox instance.
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+    }
+
     // Start is called when the MessageBox game object is loaded.
     private void Start()
     {
-		// If there is no other existing instance, set the Instance variable to this instance.
-		// This is important because we can access the MessageBox public properties and methods
-		// without having a reference to the MessageBox instance.
-		if(Instance == null)
-		{
-			Instance = this;
-		}
-		
 		messageBox = transform.FindChild("Textbox").gameObject; // Assigns the Canvas component of this game object to the messageBox variable.
         message = GetComponentInChildren<Text>(); // Assigns the first instance of the Text component from the children of this game object to the message variable.
         messageBoxEndIcon = GameObject.FindGameObjectWithTag("Textbox End Icon").GetComponent<Image>(); // Saves the Image component of the game object with the tag "Textbox End Icon".

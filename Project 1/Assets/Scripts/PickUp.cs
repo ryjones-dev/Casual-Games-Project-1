@@ -22,7 +22,7 @@ public class PickUp : MonoBehaviour {
     public AudioClip pickupSound;
     public AudioClip dropSound;
     private OptionsScript options;
-    private AudioSource audio;
+    private AudioSource audioSource;
 
     Transform m_heldObjectParent;
 
@@ -35,7 +35,7 @@ public class PickUp : MonoBehaviour {
         gripRenderer.enabled = false;
 
         options = GameObject.Find("OptionsMenu").GetComponent<OptionsScript>();
-        audio = GetComponent<AudioSource>();
+        audioSource = GetComponentInParent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -171,7 +171,7 @@ public class PickUp : MonoBehaviour {
         defaultRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
         gripRenderer.material.color = new Color(0.75f, 0.25f, 0.25f, 0.05f);
         
-        audio.PlayOneShot(pickupSound, options.soundEffectVolume);
+        audioSource.PlayOneShot(pickupSound, options.soundEffectVolume);
     }
     void dropObject(GameObject toDrop){
         toDrop.transform.parent = null;
@@ -187,6 +187,6 @@ public class PickUp : MonoBehaviour {
         defaultRenderer.material.color = new Color(0.5f, 0.5f, 0.5f, 0.05f);
         gripRenderer.material.color = new Color(0.5f, 0.5f, 0.5f, 0.05f);
         
-        audio.PlayOneShot(dropSound, options.soundEffectVolume);
+        audioSource.PlayOneShot(dropSound, options.soundEffectVolume);
     }
 }

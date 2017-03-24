@@ -84,7 +84,6 @@ public class GameUIScript : MonoBehaviour {
             }
             else if (gameSet == false)
             {
-                Debug.Log("Set game won handler");
                 game.addGameWonHandler(LevelEnd);
                 gameSet = true;
             }
